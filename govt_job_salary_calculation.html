@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Salary Breakdown of Central GOVT Employees</title>
+    <script>
+        function calculateSalary() {
+            var payLevel = parseInt(document.getElementById("payLevel").value);
+            var city = document.getElementById("city").value;
+            var tptaCity = document.getElementById("tptaCity").checked;
+
+            var basic = 0;
+            if (payLevel == 1) {
+                basic = 18000;
+            } else if (payLevel == 2) {
+                basic = 19900;
+            } else if (payLevel == 3) {
+                basic = 21700;
+            } else if (payLevel == 4) {
+                basic = 25500;
+            } else if (payLevel == 5) {
+                basic = 29200;
+            } else if (payLevel == 6) {
+                basic = 35400;
+            } else if (payLevel == 7) {
+                basic = 44900;
+            } else if (payLevel == 8) {
+                basic = 47600;
+            } else if (payLevel == 9) {
+                basic = 53100;
+            } else if (payLevel == 10) {
+                basic = 56100;
+            } else if (payLevel == 11) {
+                basic = 67700;
+            }
+
+            var da = 0.38 * basic;
+            var hra = 0;
+            if (city == "x") {
+                hra = 0.27 * basic;
+            } else if (city == "y") {
+                hra = 0.18 * basic;
+            } else if (city == "z") {
+                hra = 0.09 * basic;
+            }
+
+            var tpt = tptaCity ? 3600 : 1800;
+            var tpt_da = 0.38 * tpt;
+            var npsEmployeeContribution = 0.1 * (basic + da);
+            var npsGovtContribution = (0.14 * (basic + da));
+            var cghsDeduction = 0;
+            if (payLevel <= 5) {
+                cghsDeduction = 250;
+            } else if (payLevel == 6) {
+                cghsDeduction = 450;
+            } else if (payLevel >= 7 && payLevel <= 11) {
+                cghsDeduction = 650;
+            }
+
+            var grossSalary = basic + da + hra + tpt + tpt_da;
+            var deductions = npsEmployeeContribution + cghsDeduction;
+            var inHandSalary = grossSalary - deductions;
+            var total_nps = npsEmployeeContribution + npsGovtContribution;
+
+            document.getElementById("basic").innerHTML = basic;
+            document.getElementById("da").innerHTML = datoFixed(0);
+            document.getElementById("hra").innerHTML = hratoFixed(0);
+            document.getElementById("tpt").innerHTML = tpt;
+            document.getElementById("tpt_da").innerHTML = tpt_datoFixed(0);
+            document.getElementById("grossSalary").innerHTML = grossSalary.toFixed(0);
+            document.getElementById("npsEmployeeContribution").innerHTML = npsEmployeeContribution.toFixed(0);
+            document.getElementById("npsGovtContribution").innerHTML = npsGovtContribution.toFixed(0);
+            document.getElementById("cghsDeduction").innerHTML = cghsDeduction.toFixed(0);
+            document.getElementById("deductions").innerHTML = deductions.toFixed(0);
+            document.getElementById("inHandSalary").innerHTML = inHandSalary.toFixed(0);
+            document.getElementById("total_nps").innerHTML = total_nps.toFixed(0);
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Salary Breakdown of Central GOVT Employees</h1>
+
+    <label for="payLevel">Pay Level:</label>
+    <select id="payLevel" name="payLevel">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<option value="11">11</option>
+</select>
+    <label for="city">City:</label>
+    <select id="city" name="city">
+	<option value="x">X</option>
+	<option value="y">Y</option>
+	<option value="z">Z</option>
+</select>
+
+    <label for="tptaCity">TPTA City:</label>
+    <input type="checkbox" id="tptaCity" name="tptaCity">
+
+    <button onclick="calculateSalary()">Calculate Salary</button>
+
+    <br><br>
+    <div style="background-color: lightblue;">
+        <p>Basic Pay: <span id="basic"></span></p>
+        <p>DA: <span id="da"></span></p>
+        <p>HRA: <span id="hra"></span></p>
+        <p>TPT: <span id="tpt"></span></p>
+        <p>DA on TPT: <span id="tpt_da"></span></p>
+        <p style="font-weight: bold;">Gross Salary: <span id="grossSalary"></span></p>
+    </div>
+    <hr class="dashed">
+    <div style="background-color: pink;">
+        <p>CGHS Deduction: <span id="cghsDeduction"></span></p>
+        <p style="color:green">NPS Employee Contribution: <span id="npsEmployeeContribution"></span></p>
+        <p>Total Deductions: <span id="deductions"></span></p>
+    </div>
+    <hr class="dashed">
+    <p style="color: red; font-weight: bold; background-color: black; padding: 5%">In-Hand Salary: <span id="inHandSalary"></span></p>
+    <p style="color:green">NPS Govt Contribution: <span id="npsGovtContribution"></span></p>
+    <p style="color: white; background-color: grey; padding: 3%">Total NPS: <span id="total_nps"></span></p>
+    <style>
+        .dashed {
+            border-style: dashed;
+        }
+    </style>
+
+</body>
+
+</html>
