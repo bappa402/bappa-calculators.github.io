@@ -3,6 +3,7 @@
 
 <head>
     <title>Salary Breakdown of Central GOVT Employees</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         function calculateSalary() {
             var payLevel = parseInt(document.getElementById("payLevel").value);
@@ -79,22 +80,19 @@
 </head>
 
 <body>
-    <h1>Salary Breakdown of Central GOVT Employees</h1>
+    <h2>Salary Breakdown of Central GOVT Employees</h2>
 
     <label for="payLevel">Pay Level:</label>
     <select id="payLevel" name="payLevel">
-<option value="1">1</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">4</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7</option>
-<option value="8">8</option>
-<option value="9">9</option>
-<option value="10">10</option>
-<option value="11">11</option>
-</select><br>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+	</select><br>
     <label for="city">City:</label>
     <select id="city" name="city">
 	<option value="x">X</option>
@@ -109,64 +107,54 @@
     <button onclick="calculateSalary()">Calculate Salary</button>
 
     <br><br>
-    <div style="background-color: lightblue;">
-        <p>Basic Pay: <span id="basic"></span></p>
-        <p>DA: <span id="da"></span></p>
-        <p>HRA: <span id="hra"></span></p>
-        <p>TPT: <span id="tpt"></span></p>
-        <p>DA on TPT: <span id="tpt_da"></span></p>
-        <p style="font-weight: bold;">Gross Salary: <span id="grossSalary"></span></p>
-    </div>
-    <hr class="dashed">
-    <div style="background-color: pink;">
-        <p>CGHS Deduction: <span id="cghsDeduction"></span></p>
-        <p style="color:green">NPS Employee Contribution: <span id="npsEmployeeContribution"></span></p>
-        <p>Total Deductions: <span id="deductions"></span></p>
-    </div>
-    <hr class="dashed">
-    <p style="color: red; font-weight: bold; background-color: black; padding: 4%; font-size: 140%;">In-Hand Salary: <span id="inHandSalary"></span></p>
-    <p style="color:green">NPS Govt Contribution: <span id="npsGovtContribution"></span></p>
-    <p style="color: white; background-color: grey; padding: 3%">Total NPS: <span id="total_nps"></span></p>
-    <style>
-        h1 {
-            width: 100%;
-            color: blue;
-            font-size: 160%;
-        }
+   
+	<div id="d1">
+		<p>Basic Pay: <span id="basic"></span></p>
+		<p>DA: <span id="da"></span></p>
+		<p>HRA: <span id="hra"></span></p>
+		<p>TPT: <span id="tpt"></span></p>
+		<p>DA on TPT: <span id="tpt_da"></span></p>
+		<p style="font-weight: bold;">Gross Salary: <span id="grossSalary"></span></p>
+	</div>
+	
+	<div id="d2">
+		<p>CGHS Deduction: <span id="cghsDeduction"></span></p>
+		<p>NPS Employee Contribution: <span id="npsEmployeeContribution"></span></p>
+		<p>Total Deductions: <span id="deductions"></span></p>
+	</div>
 
-        .dashed {
-            border-style: dashed;
-        }
+	<div id="d3">
+		<p>In-Hand Salary: <span id="inHandSalary"></span></p>
+		<p>NPS Govt Contribution: <span id="npsGovtContribution"></span></p>
+		<p>Total NPS: <span id="total_nps"></span></p>
+	</div>
+    
+    
+	<style>
+        #inHandSalary, #total_nps {
+			background-color: yellow;
+			font-weight: bold;
+		}
 
-        body {
-            margin: 10%;
-            width: 50%;
-            padding: 5%;
-            font-size: 120%;
-        }
-
-        label,
-        select,
-        option,
-        input,
-        button {
-            font-size: 120%;
-        }
-
-        input[type="checkbox"] {
-            width: 25px;
-            height: 25px;
-        }
-
-        @media screen and (orientation: portrait) {
-            label,
-            select,
-            option,
-            input,
-            button {
-                font-size: 250%;
-            }
-        }
+		button {
+			color: white;
+			background-color: blue;
+		}
+		
+		#d1 {
+			float: left;
+			width: 30%;
+		}
+		#d2 {
+			float: middle;
+			width=30%;
+		}
+		#d3 {
+			float: right;
+			width=30%;
+			margin-right: 10%;
+			margin-top: -10%;
+		}
     </style>
 
 </body>
