@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Force and Acceleration Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <style>
+        body{
+            text-align: center;
+            scale: 1.5;
+        }
+        h2{
+            margin-top: 120px;
+            color: red;
+        }
+        button{
+            color: white;
+            background-color: blue;
+            border-radius: 7px;
+        }
+    </style>
+    <h2>Force and Acceleration Calculator</h2>
+
+    <form id="calcForm">
+        <label for="choice">Choose what to find:</label>
+        <select id="choice" onchange="showFields()" style="margin-bottom: 20px;">
+            <option value="" selected disabled>Choose an option</option>
+            <option value="force">Force (F)</option>
+            <option value="acceleration">Acceleration (a)</option>
+        </select>
+
+
+        <div id="massDiv" style="display:none;">
+            <label for="mass">Enter mass (m):</label>
+            <input type="number" id="mass" step="any" required>
+        </div>
+        <br>
+
+        <div id="forceDiv" style="display:none;">
+            <label for="force">Enter force (F):</label>
+            <input type="number" id="force" step="any">
+        </div>
+        <br>
+
+        <div id="accelerationDiv" style="display:none;">
+            <label for="acceleration">Enter acceleration (a):</label>
+            <input type="number" id="acceleration" step="any">
+        </div>
+        <br>
+
+        <button type="button" onclick="calculate()">Calculate</button>
+
+        <div id="result" style="display:none;">
+            <p id="resultText"></p>
+        </div>
+        
+    </form>
+    <img src="f=ma.png" style="height: 200px;">
+
+    <script>
+        function showFields() {
+            var choice = document.getElementById("choice").value;
+            var massDiv = document.getElementById("massDiv");
+            var forceDiv = document.getElementById("forceDiv");
+            var accelerationDiv = document.getElementById("accelerationDiv");
+
+            if (choice === "force") {
+                massDiv.style.display = "block";
+                forceDiv.style.display = "none";
+                accelerationDiv.style.display = "block";
+            } else if (choice === "acceleration") {
+                massDiv.style.display = "block";
+                forceDiv.style.display = "block";
+                accelerationDiv.style.display = "none";
+            }
+        }
+
+
+        function calculate() {
+            var choice = document.getElementById("choice").value;
+            var mass = parseFloat(document.getElementById("mass").value);
+            var force = parseFloat(document.getElementById("force").value);
+            var acceleration = parseFloat(document.getElementById("acceleration").value);
+            var resultText = document.getElementById("resultText");
+
+            var result;
+            if (choice === "force") {
+                result = mass * acceleration;
+                resultText.textContent = "Force (F) = " + result + " N";
+            } else {
+                result = force / mass;
+                result=result.toFixed(2);
+                resultText.textContent = "Acceleration (a) = " + result + " m/s²";
+            }
+
+            var resultDiv = document.getElementById("result");
+            resultDiv.style.display = "block";
+        }
+    </script>
+
+    </script>
+</body>
+
+</html>
