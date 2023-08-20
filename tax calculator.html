@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Income Tax Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            text-align: center;
+        }
+
+        h1 {
+            color: blue;
+        }
+
+        div {
+            scale: 1.2;
+        }
+
+        button {
+            color: white;
+            background-color: green;
+            border-radius: 8px;
+        }
+
+        #ans {
+            font-weight: bold;
+        }
+        #guidelines{
+            color: rgb(211, 29, 114);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Income Tax Calculator (New Regime)</h1><br><br>
+    <div>
+        <em id="guidelines">
+            <p>Don't enter CTC, enter only the Taxable income in lakhs (e.g. 5, 7, 12, 20 etc) which is approximately
+            </p>
+            <p>total inhand salary over the year - 50k standard deduction</p>
+        </em>
+        <br><br>
+
+        <label for="income">Enter Taxable Income (in lakhs):</label>
+        <input type="number" id="income" step="any">
+        <button onclick="calculateTax()">Calculate Tax</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        function calculateTax() {
+            var taxableIncome = parseFloat(document.getElementById("income").value);
+            var taxAmount = 0;
+            var dx;
+
+            if (taxableIncome <= 7) {
+                taxAmount = 0;
+            }
+            else if (taxableIncome <= 9) {
+                dx = taxableIncome - 6;
+                taxAmount = 15000 + 0.10 * dx * 1e5;
+            }
+            else if (taxableIncome <= 12) {
+                dx = taxableIncome - 9;
+                taxAmount = 15000 + 30000 + 0.15 * dx * 1e5;
+            }
+            else if (taxableIncome <= 15) {
+                dx = taxableIncome - 12;
+                taxAmount = 15000 + 30000 + 45000 + 0.20 * dx * 1e5;
+            }
+            else {
+                dx = taxableIncome - 15;
+                taxAmount = 15000 + 30000 + 45000 + 60000 + 0.30 * dx * 1e5;
+            }
+            tax_percent = (taxAmount * 100 / (taxableIncome * 1e5)).toFixed();
+            monthly_tax = Math.round((taxAmount / 12));
+            inhand = Math.round(taxableIncome * 1e5 / 12)
+
+            document.getElementById("result").innerHTML =
+                `<p> annual tax = ${taxAmount.toLocaleString("en-IN")} </p>
+                <p id="ans">  monthly tax = ${monthly_tax.toLocaleString("en-IN")} </p>
+                <p> monthly inhand salary (before income tax deduction)= ${inhand.toLocaleString("en-IN")} </p>
+                <p> monthly inhand salary (after income tax deduction)= ${(inhand - monthly_tax).toLocaleString("en-IN")} </p>
+                <p> tax as percentage of inhand = ${tax_percent}% </p>`;
+        }
+    </script>
+</body>
+
+</html>
