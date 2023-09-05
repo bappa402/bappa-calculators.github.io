@@ -136,7 +136,7 @@
         <input type="text" id="energyCharge" name="energyCharge" readonly><br><br>
         <label for="subsidy">Subsidy:</label>
         <input type="text" id="subsidy" name="subsidy" readonly><br><br>
-        <label for="totalCharge">Total Charge:</label>
+        <label for="totalCharge">Total Charge after 1% rebate:</label>
         <input type="text" id="totalCharge" name="totalCharge" readonly><br><br>
     </form>
     <p><br><br><i><b>Note:</b> Subsidy varies with quarter and location.<br>here it is assumed that subsidy is Rs 1.1 per unit.<br><b>And if unit <= 75</b>, Subsidy = sum of all charges <br> so that total charge becomes zero.</br></i></p>
@@ -186,7 +186,7 @@
 <script>
     function calculate() {
         var units = document.getElementById("units").value;
-        var fixedCharge = 45;
+        var fixedCharge = 243;
         var meterRent = 30;
         var subsidy = 0;
         var energyCharge = 0;
@@ -212,7 +212,7 @@
             subsidy = units * 1.1;
         };
 
-        totalCharge = fixedCharge + meterRent + energyCharge - subsidy;
+        totalCharge = (fixedCharge + meterRent + energyCharge - subsidy)*0.99;
 
         document.getElementById("fixedCharge").value = fixedCharge.toFixed(2);
         document.getElementById("meterRent").value = meterRent.toFixed(2);
