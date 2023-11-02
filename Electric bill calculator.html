@@ -2,125 +2,16 @@
 <html>
 
 <head>
-
-    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electric Bill Calculator</title>
-    <style>
-        /* Default styles for all devices */
-
-        body {
-            font-size: 30px;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Media query for portrait mode */
-
-        @media screen and (orientation: portrait) {
-            body {
-                font-size: 20px;
-                width: 100%;
-                height: 100%;
-            }
-        }
-
-        /* Media query for landscape mode */
-
-        @media screen and (orientation: landscape) {
-            body {
-                font-size: 15px;
-                width: 100%;
-                height: 100%;
-            }
-        }
-
-
-        h1 {
-            text-align: center;
-            color: blue;
-        }
-
-        h2 {
-            text-align: center;
-            color: DeepPink;
-        }
-
-        h3 {
-            text-align: center;
-            color: green;
-        }
-
-        form {
-            width: 90%;
-            margin: 0 auto;
-		text-align: left;
-        }
-
-        label {
-            display: inline-block;
-		font-size: 150%;
-
-        }
-
-        p {
-            text-align: left;
-            margin: 0 auto;
-            width: 80%;
-		
-
-        }
-
-
-        input[type="number"],
-        input[type="text"] {
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-		font-size: 150%;
-		width: 50%;
-
-        }
-
-        button[type="button"] {
-            padding: 5px 10px;
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-		font-size: 150%
-
-        }
-
-        button[type="button"]:hover {
-            background-color: #3e8e41;
-        }
-
-        input[type="text"]:read-only {
-            background-color: #f2f2f2;
-            font-weight: bold;
-		width: 50%;
-        }
-
-        img {
-            float: right;
-            margin: 0 0 50px 50px;
-        }
-
-        table,
-        th,
-        td {
-            border: 1px solid black;
-            border-collapse: collapse;
-            padding: 5px;
-            margin: 0 auto;
-            text-align: center;
-		font-size: 120%
-        }
-    </style>
 </head>
 
 <body>
+    <style>
+        img{
+            float: right;
+        }
+    </style>
     <h1>WBSEDCL Electric Bill Calculator</h1>
     <h2>Domestic Rural</h2>
     <img src="WBSEDCL_logo.jpg" alt="WBSEDCL_logo">
@@ -178,50 +69,47 @@
         </tbody>
     </table>
     <br><br><br><br>
-</body>
-
-</html>
 
 
-<script>
-    function calculate() {
-        var units = document.getElementById("units").value;
-        var fixedCharge = 243;
-        var meterRent = 30;
-        var subsidy = 0;
-        var energyCharge = 0;
-        var totalCharge = 0;
+    <script>
+        function calculate() {
+            var units = document.getElementById("units").value;
+            var fixedCharge = 243;
+            var meterRent = 30;
+            var subsidy = 0;
+            var energyCharge = 0;
+            var totalCharge = 0;
 
 
-        if (units <= 102) {
-            energyCharge = units * 5.49;
-        } else if (units <= 180) {
-            energyCharge = (102 * 5.49) + ((units - 102) * 6.09);
-        } else if (units <= 300) {
-            energyCharge = (102 * 5.49) + (78 * 6.09) + ((units - 180) * 6.96);
-        } else if (units <= 600) {
-            energyCharge = (102 * 5.49) + (78 * 6.09) + (120 * 6.96) + ((units - 300) * 7.46);
-        } else if (units <= 900) {
-            energyCharge = (102 * 5.49) + (78 * 6.09) + (120 * 6.96) + (300 * 7.46) + ((units - 600) * 7.55);
-        } else {
-            energyCharge = (102 * 5.49) + (78 * 6.09) + (120 * 6.96) + (300 * 7.46) + (300 * 7.55) + ((units - 900) * 9.22);
+            if (units <= 102) {
+                energyCharge = units * 5.49;
+            } else if (units <= 180) {
+                energyCharge = (102 * 5.49) + ((units - 102) * 6.09);
+            } else if (units <= 300) {
+                energyCharge = (102 * 5.49) + (78 * 6.09) + ((units - 180) * 6.96);
+            } else if (units <= 600) {
+                energyCharge = (102 * 5.49) + (78 * 6.09) + (120 * 6.96) + ((units - 300) * 7.46);
+            } else if (units <= 900) {
+                energyCharge = (102 * 5.49) + (78 * 6.09) + (120 * 6.96) + (300 * 7.46) + ((units - 600) * 7.55);
+            } else {
+                energyCharge = (102 * 5.49) + (78 * 6.09) + (120 * 6.96) + (300 * 7.46) + (300 * 7.55) + ((units - 900) * 9.22);
+            }
+            if (units <= 75) {
+                subsidy = fixedCharge + meterRent + energyCharge;
+            } else {
+                subsidy = units * 1.1;
+            };
+
+            totalCharge = (fixedCharge + meterRent + energyCharge - subsidy)*0.99;
+
+            document.getElementById("fixedCharge").value = fixedCharge.toFixed(2);
+            document.getElementById("meterRent").value = meterRent.toFixed(2);
+            document.getElementById("energyCharge").value = energyCharge.toFixed(2);
+            document.getElementById("subsidy").value = subsidy.toFixed(2);
+
+            document.getElementById("totalCharge").value = totalCharge.toFixed(2);
         }
-        if (units <= 75) {
-            subsidy = fixedCharge + meterRent + energyCharge;
-        } else {
-            subsidy = units * 1.1;
-        };
-
-        totalCharge = (fixedCharge + meterRent + energyCharge - subsidy)*0.99;
-
-        document.getElementById("fixedCharge").value = fixedCharge.toFixed(2);
-        document.getElementById("meterRent").value = meterRent.toFixed(2);
-        document.getElementById("energyCharge").value = energyCharge.toFixed(2);
-        document.getElementById("subsidy").value = subsidy.toFixed(2);
-
-        document.getElementById("totalCharge").value = totalCharge.toFixed(2);
-    }
-</script>
+    </script>
 </body>
 
 </html>
