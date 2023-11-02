@@ -69,6 +69,12 @@
         </tbody>
     </table>
     <br><br><br><br>
+    <style>
+        #totalCharge {
+            font-weight: bold;
+            color: red;
+        }
+    </style>
 
 
     <script>
@@ -107,7 +113,7 @@
             document.getElementById("energyCharge").value = energyCharge.toFixed(2);
             document.getElementById("subsidy").value = subsidy.toFixed(2);
 
-            document.getElementById("totalCharge").value = totalCharge.toFixed(2);
+            document.getElementById("totalCharge").value = totalCharge.toFixed();
         }
     </script>
 </body>
