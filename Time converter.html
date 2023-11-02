@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Time Converter</title>
+
 </head>
 <body>
     <h1>Time Converter</h1>
+    <img src="clock.jpg" alt="wall clock image"><br><br><br>
 
     <label for="timeInput">Enter time:</label>
     <input type="text" id="timeInput" placeholder="HH:MM (am/pm)">
@@ -79,6 +80,17 @@
     <style>
         body{
             text-align: center;
+        }
+        img{
+            height: 100px;
+            
+        }
+        @media screen and (orientation: portrait) {
+            body {
+                font-size: 20px;
+                width: 100%;
+                height: 100%;
+            }
         }
     </style>
 </body>
