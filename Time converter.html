@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h1>Time Converter</h1>
+    <img src="clock.jpg" alt="wall clock image"><br><br><br>
+
+    <label for="timeInput">Enter time:</label>
+    <input type="text" id="timeInput" placeholder="HH:MM (am/pm)">
+    <select id="amPmSelect">
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
+    </select>
+
+    <p>Convert to:</p>
+    <input type="radio" id="convertToIST" name="convertTo" value="IST" checked>
+    <label for="convertToIST">IST</label>
+    <input type="radio" id="convertToEST" name="convertTo" value="EST">
+    <label for="convertToEST">EST</label>
+
+    <button onclick="convertTime()">Convert</button>
+
+    <p>Result: <span id="resultTime"></span></p>
+
+    <script>
+        function convertTime() {
+            const timeInput = document.getElementById("timeInput").value;
+            const amPmSelect = document.getElementById("amPmSelect").value;
+            const convertToIST = document.getElementById("convertToIST").checked;
+
+            
+
+            const [hours, minutes] = timeInput.split(':');
+            let resultHours = parseInt(hours);
+            let resultMinutes = parseInt(minutes);
+
+            if (amPmSelect === "PM") {
+                resultHours += 12;
+            }
+
+            if (convertToIST) {
+                // Convert to IST (IST = GMT+5:30)
+                resultHours += 9;
+                resultMinutes += 30;
+
+                if (resultMinutes >= 60) {
+                    resultMinutes -= 60;
+                    resultHours += 1;
+                }
+
+                if (resultHours >= 24) {
+                    resultHours -= 24;
+                }
+            } else {
+                // Convert to EST (EST = IST - 9:30)
+                resultHours -= 9;
+                resultMinutes -= 30;
+
+                if (resultMinutes < 0) {
+                    resultMinutes += 60;
+                    resultHours -= 1;
+                }
+
+                if (resultHours < 0) {
+                    resultHours += 24;
+                }
+            }
+
+            const resultAmPm = resultHours >= 12 ? "PM" : "AM";
+            resultHours = resultHours % 12;
+            if (resultHours === 0) {
+                resultHours = 12;
+            }
+
+            document.getElementById("resultTime").textContent = resultHours.toString().padStart(2, '0') + ":" + resultMinutes.toString().padStart(2, '0') + " " + resultAmPm;
+        }
+    </script>
+    <style>
+        body{
+            text-align: center;
+            scale: 1;
+        }
+        img{
+            height: 100px;
+            
+        }
+        
+    </style>
+</body>
+</html>
