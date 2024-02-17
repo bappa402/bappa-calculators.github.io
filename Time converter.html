@@ -39,6 +39,9 @@
             if (amPmSelect === "PM") {
                 resultHours += 12;
             }
+            if (amPmSelect === "AM" && resultHours===12) {
+                resultHours =0;
+            }
 
             if (convertToIST) {
                 // Convert to IST (IST = GMT+5:30)
