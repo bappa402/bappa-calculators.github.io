@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matching Weekday Finder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f0f0f0;
+      text-align: center;
+    }
+    input, select, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+	button {
+		color:white; 
+		background-color:blue;
+		padding:5px;
+	}
+  </style>
+</head>
+<body>
+  <h2>Find Years Where Date Falls on Specific Weekday</h2>
+
+  <label>Day:</label>
+  <input type="number" id="day" min="1" max="31" value="14">
+
+  <label>Month:</label>
+  <input type="number" id="month" min="1" max="12" value="2">
+
+  <br>
+
+  <label>Weekday:</label>
+  <select id="weekday">
+    <option value="0">Sunday</option>
+    <option value="1">Monday</option>
+    <option value="2">Tuesday</option>
+    <option value="3">Wednesday</option>
+    <option value="4">Thursday</option>
+    <option value="5">Friday</option>
+    <option value="6">Saturday</option>
+  </select>
+
+  <br>
+  <button onclick="findMatchingDates()">Find Dates</button>
+
+  <div id="result"></div>
+
+  <script>
+    function findMatchingDates() {
+      const day = parseInt(document.getElementById("day").value);
+      const month = parseInt(document.getElementById("month").value) - 1; // 0-indexed
+      const targetWeekday = parseInt(document.getElementById("weekday").value);
+      const currentYear = new Date().getFullYear();
+
+      let pastMatches = [];
+      let futureMatches = [];
+
+      // Look 20 years back and forward just in case
+      for (let year = currentYear - 100; year <= currentYear + 100; year++) {
+        const date = new Date(year, month, day);
+        if (date.getDate() === day && date.getDay() === targetWeekday) {
+          if (year < currentYear) pastMatches.push(date);
+          else futureMatches.push(date);
+        }
+      }
+
+      // Get 5 past + 5 future
+      pastMatches = pastMatches.slice(-5); // last 5 from past
+      futureMatches = futureMatches.slice(0, 5); // first 5 from future
+
+      const format = d => d.toDateString();
+
+      const resultHTML = `
+        <h3>Past Matches:</h3>
+        <ul>${pastMatches.map(d => `<li>${format(d)}</li>`).join("")}</ul>
+        <h3>Future Matches:</h3>
+        <ul>${futureMatches.map(d => `<li>${format(d)}</li>`).join("")}</ul>
+      `;
+
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+  </script>
+</body>
+</html>
