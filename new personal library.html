@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 10px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: yellow;
+            background-color: black;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 90%;
+            margin: auto;
+        }
+
+        button {
+            display: inline-block;
+            width: 90%;
+            max-width: 300px;
+            margin: 10px auto;
+            padding: 12px;
+            font-size: 16px;
+            color: white;
+            background-color: green;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkgreen;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            max-width: 300px;
+            margin: 20px auto;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #hyperlinks {
+            margin-top: 20px;
+            text-align: left;
+            max-width: 90%;
+            margin: 20px auto;
+        }
+
+        a {
+            display: block;
+            margin: 8px 0;
+            text-decoration: none;
+            font-size: 18px;
+            color: blue;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Personal Digital Library</h1>
+
+    <select id="categorySelect" onchange="categoryChanged()">
+        <option value="all">All Categories</option>
+        <option value="science">Science</option>
+        <option value="memes">Memes</option>
+    </select>
+
+    <br><br>
+
+    <input type="text" id="searchBar" onkeyup="searchFunction()" placeholder="Search for videos..." />
+
+    <br><br>
+
+    <div id="hyperlinks"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js"></script>
+
+    <script>
+        const categories = {
+            science: [
+                { title: "yt: How simple ideas lead to scientific discoveries", url: "https://www.youtube.com/watch?v=F8UFGu2M2gM" },
+                { title: "yt: Day in a Life of a WW2 Comfort Woman", url: "https://www.youtube.com/watch?v=WglIW1u-YFY" },
+                { title: "fb: sci fi scenes - galactic empire", url: "https://www.facebook.com/share/r/1AdR3mLQU8/" }
+            ],
+            memes: [
+                
+				{ title: "fb: bananas without B is pineapple", url: "https://www.facebook.com/share/p/15F6Zs5bNw/" }
+            ]
+        };
+
+        // Initialize Fuse.js
+        const fuseOptions = {
+            keys: ['title'], // Search within the title
+            threshold: 0.4,  // Adjust the threshold for fuzziness
+            includeScore: true  // Include the score in results
+        };
+
+        // Convert categories to an array for Fuse.js
+        let allItems = [];
+        Object.keys(categories).forEach(category => {
+            categories[category].forEach(item => {
+                allItems.push({ ...item, category });
+            });
+        });
+
+        const fuse = new Fuse(allItems, fuseOptions);
+
+        function generateLinks(filteredItems) {
+            let linksHTML = '';
+            filteredItems.forEach(item => {
+                linksHTML += `<a href="${item.url}" target="_blank">${item.title}</a>`;
+            });
+            document.getElementById("hyperlinks").innerHTML = linksHTML;
+        }
+
+        function categoryChanged() {
+            searchFunction(); // Trigger search after category change to reflect the selected category
+        }
+
+        function searchFunction() {
+            const query = document.getElementById('searchBar').value.toLowerCase();
+            const selectedCategory = document.getElementById('categorySelect').value;
+
+            let itemsToSearch = allItems; // Always search across all items
+
+            // Fuse.js search across all items
+            const results = fuse.search(query);
+            let filteredItems = results.map(result => result.item);
+
+            // If the category is selected and it's not 'all', filter search results by category
+            if (selectedCategory !== 'all') {
+                filteredItems = filteredItems.filter(item => item.category === selectedCategory);
+            }
+
+            if (query === "") {
+                // If search bar is cleared, show all items of the selected category
+                if (selectedCategory === 'all') {
+                    generateLinks(allItems);  // Show all items
+                } else {
+                    generateLinks(categories[selectedCategory]);  // Show items of selected category
+                }
+            } else {
+                generateLinks(filteredItems);  // Display filtered items
+            }
+        }
+
+        // Initialize with the last selected category or show all by default
+        window.onload = function() {
+            const selectedCategory = document.getElementById('categorySelect').value || 'all';
+            searchFunction(); // Show results for the selected category
+        };
+    </script>
+
+</body>
+
+</html>
