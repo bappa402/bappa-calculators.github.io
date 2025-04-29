@@ -102,14 +102,14 @@
     <script src="https://cdn.jsdelivr.net/npm/fuse.js"></script>
 
     <script>
+        // Manually add your categories and links here.
         const categories = {
-
-            food: [
+           food: [
                 { title: "fb: bengali dish, chicken/fish thali", url: "https://www.facebook.com/share/p/16AdrHSJtH/" }
             ],
             reels: [
                 { title: "insta: car driving on beautiful road, rainy day", url: "https://www.instagram.com/reel/DIBJzM9J0Ng/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-                { title: "insta: Manager searching to assign task, cat and dog meme", url: "https://www.instagram.com/reel/DIk3OqzzkNA/?igsh=MXF0czg0aGNueTRtbQ==" },
+                { title: "insta: Manager searching to assign task, cat and dog meme", url: "https://www.instagram.com/reel/DHZL5cyS8bt/?igsh=YnN6ajNjN2d4dTR4" },
                 { title: "yt: Jodi Ujar kora valobasay prem chaite aso romantic couple 1", url: "https://youtu.be/RfOw3rwuG74?si=nyxAaChPCezIGezs" },
                 { title: "insta: aquarium toilet", url: "https://www.instagram.com/reel/DF8JC1kOssW/?igsh=MWl1NjdxcHkxa2NpOA==" },
                 { title: "https vs http", url: "https://www.facebook.com/share/r/19G5Hkv6cS/" },
@@ -145,23 +145,26 @@
             ]
         };
 
-        // Initialize Fuse.js
-        const fuseOptions = {
-            keys: ['title'], // Search within the title
-            threshold: 0.4,  // Adjust the threshold for fuzziness
-            includeScore: true  // Include the score in results
-        };
+        // Function to rank and filter items by word matches
+        function rankItems(query, items) {
+            const words = query.toLowerCase().split(' ');
 
-        // Convert categories to an array for Fuse.js
-        let allItems = [];
-        Object.keys(categories).forEach(category => {
-            categories[category].forEach(item => {
-                allItems.push({ ...item, category });
-            });
-        });
+            // Rank each item based on word matches
+            return items.map(item => {
+                let matchScore = 0;
 
-        const fuse = new Fuse(allItems, fuseOptions);
+                // Check how many words match in the title
+                words.forEach(word => {
+                    if (item.title.toLowerCase().includes(word)) {
+                        matchScore++;
+                    }
+                });
 
+                return { ...item, matchScore };
+            }).sort((a, b) => b.matchScore - a.matchScore); // Sort by match score
+        }
+
+        // Function to generate the links based on the filtered and ranked items
         function generateLinks(filteredItems) {
             let linksHTML = '';
             filteredItems.forEach(item => {
@@ -170,34 +173,34 @@
             document.getElementById("hyperlinks").innerHTML = linksHTML;
         }
 
+        // Function called when the category is changed
         function categoryChanged() {
             searchFunction(); // Trigger search after category change to reflect the selected category
         }
 
+        // Search function to handle word-wise searching and ranking
         function searchFunction() {
-            const query = document.getElementById('searchBar').value.toLowerCase();
+            const query = document.getElementById('searchBar').value;
             const selectedCategory = document.getElementById('categorySelect').value;
 
-            let itemsToSearch = allItems; // Always search across all items
+            let itemsToSearch = [];
 
-            // Fuse.js search across all items
-            const results = fuse.search(query);
-            let filteredItems = results.map(result => result.item);
-
-            // If the category is selected and it's not 'all', filter search results by category
-            if (selectedCategory !== 'all') {
-                filteredItems = filteredItems.filter(item => item.category === selectedCategory);
+            // If 'all' is selected, search through all items
+            if (selectedCategory === 'all') {
+                Object.keys(categories).forEach(category => {
+                    itemsToSearch = itemsToSearch.concat(categories[category]);
+                });
+            } else {
+                itemsToSearch = categories[selectedCategory];
             }
 
             if (query === "") {
-                // If search bar is cleared, show all items of the selected category
-                if (selectedCategory === 'all') {
-                    generateLinks(allItems);  // Show all items
-                } else {
-                    generateLinks(categories[selectedCategory]);  // Show items of selected category
-                }
+                // If search bar is empty, show all items for the selected category
+                generateLinks(itemsToSearch);
             } else {
-                generateLinks(filteredItems);  // Display filtered items
+                // Perform the ranking search
+                const rankedItems = rankItems(query, itemsToSearch);
+                generateLinks(rankedItems); // Show ranked results
             }
         }
 
