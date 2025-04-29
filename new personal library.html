@@ -161,7 +161,8 @@
                 });
 
                 return { ...item, matchScore };
-            }).sort((a, b) => b.matchScore - a.matchScore); // Sort by match score
+            }).filter(item => item.matchScore > 0) // Filter out items with no matches
+              .sort((a, b) => b.matchScore - a.matchScore); // Sort by match score
         }
 
         // Function to generate the links based on the filtered and ranked items
