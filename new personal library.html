@@ -86,7 +86,7 @@
         <option value="science">Science</option>
         <option value="memes">Memes</option>
         <option value="food">food</option>
-	<option value="reels">reels/shorts</option>
+        <option value="reels">reels/shorts</option>
         <option value="vlog">Travel Vlogs</option>
         <option value="blog">Blog Posts</option>
     </select>
@@ -103,40 +103,45 @@
 
     <script>
         const categories = {
-            
+
             food: [
-            { title: "fb: bengali dish, chicken/fish thali", url: "https://www.facebook.com/share/p/16AdrHSJtH/" }
+                { title: "fb: bengali dish, chicken/fish thali", url: "https://www.facebook.com/share/p/16AdrHSJtH/" }
             ],
-	    reels: [
+            reels: [
+                { title: "insta: car driving on beautiful road, rainy day", url: "https://www.instagram.com/reel/DIBJzM9J0Ng/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+                { title: "insta: Manager searching to assign task, cat and dog meme", "https://www.instagram.com/reel/DHZL5cyS8bt/?igsh=YnN6ajNjN2d4dTR4"},
                 { title: "yt: Jodi Ujar kora valobasay prem chaite aso romantic couple 1", url: "https://youtu.be/RfOw3rwuG74?si=nyxAaChPCezIGezs" },
-{ title: "insta: aquarium toilet", url: "https://www.instagram.com/reel/DF8JC1kOssW/?igsh=MWl1NjdxcHkxa2NpOA==" },
-{title: "insta: kolkata rain", url : "https://www.instagram.com/reel/DHbB5A-zro3/?igsh=Y3MzeHFsd2tjeG1h" },
-{title: "insta: Teams call during lunch : buffallo stopped eating grass", url: "https://www.instagram.com/reel/DC3YZgJSWdU/?igsh=MWJwZDljYmt6am5mOQ==" },
+                { title: "insta: aquarium toilet", url: "https://www.instagram.com/reel/DF8JC1kOssW/?igsh=MWl1NjdxcHkxa2NpOA==" },
+                { title: "https vs http", url: "https://www.facebook.com/share/r/19G5Hkv6cS/" },
+                { title: "insta: kolkata rain", url: "https://www.instagram.com/reel/DHbB5A-zro3/?igsh=Y3MzeHFsd2tjeG1h" },
+                { title: "insta: Teams call during lunch : buffallo stopped eating grass", url: "https://www.instagram.com/reel/DC3YZgJSWdU/?igsh=MWJwZDljYmt6am5mOQ==" },
                 { title: "yt: Jodi Ujar kora valobasay prem chaite aso romantic couple 2", url: "https://youtube.com/shorts/oeZO5eMxxqc?si=jSy41tcEEjNh8AD4" },
                 { title: "yt: Train: Jodi Ujar kora valobasay prem chaite aso", url: "https://youtube.com/shorts/nv7HY9OBLHs?si=kLdPAUN7eUyq7-J8" }
             ],
             vlog: [
                 { title: "fb: uber shuttl monobus", url: "https://www.facebook.com/share/p/168x3jHnYQ/" },
-		{ title: "yt: china bullet train bengali girl", url: "https://www.youtube.com/watch?v=tIvrzngqWa4" },
+                { title: "yt: china bullet train bengali girl", url: "https://www.youtube.com/watch?v=tIvrzngqWa4" },
                 { title: "fb: evening flight landing of paris eiffel tower", url: "https://www.facebook.com/share/16EetBLjsU/" },
                 { title: "dr: china bullet train view clips", url: "https://drive.google.com/drive/folders/1uUH7zli4A9ZbbTKQo8UkHPJGNfc7N9RQ?usp=drive_link" },
-                {title: "fb: flight schedule dashboard at airport", url: "https://www.facebook.com/photo.php?fbid=122115581474437634&set=pb.61563129026972.-2207520000&type=3"}
+                { title: "fb: flight schedule dashboard at airport", url: "https://www.facebook.com/photo.php?fbid=122115581474437634&set=pb.61563129026972.-2207520000&type=3" }
             ],
             blog: [
                 { title: "yt: 10 things to do in Paris", url: "https://www.youtube.com/watch?v=1a2b3c4d5e6" },
                 { title: "yt: 10 things to do in London", url: "https://www.youtube.com/watch?v=7g8h9i0j1k2" }],
 
-	    science: [
+            science: [
                 { title: "yt: How simple ideas lead to scientific discoveries", url: "https://www.youtube.com/watch?v=F8UFGu2M2gM" },
+                { title: "fb: Square vs triangle unfair advantage", url: "https://www.facebook.com/share/p/1ER87GiDMW/" },
                 { title: "yt: Day in a Life of a WW2 Comfort Woman", url: "https://www.youtube.com/watch?v=WglIW1u-YFY" },
-                { title: "fb: sci fi scenes - galactic empire", url: "https://www.facebook.com/share/r/1AdR3mLQU8/" }
+                { title: "fb: sci fi scenes - galactic empire", url: "https://www.facebook.com/share/r/1AdR3mLQU8/" },
+                { title: "html source file of this page", url: "https://github.com/bappa402/bappa-calculators.github.io/edit/main/new%20personal%20library.html" }
             ],
             memes: [
-                
-		{ title: "fb: bananas without B is pineapple", url: "https://www.facebook.com/share/p/15F6Zs5bNw/" },
-                {title: "dr: adult: boys vs girls in their 20s", url: "https://drive.google.com/file/d/1_LmzAZ5Bnthk8RoPs7JsKt-e5mpi5ljK/view?usp=drive_link"},
+
+                { title: "fb: bananas without B is pineapple", url: "https://www.facebook.com/share/p/15F6Zs5bNw/" },
+                { title: "dr: adult: boys vs girls in their 20s", url: "https://drive.google.com/file/d/1_LmzAZ5Bnthk8RoPs7JsKt-e5mpi5ljK/view?usp=drive_link" },
                 { title: "dr: adult: black hole analogy of zebra pant", url: "https://drive.google.com/file/d/1dxLxHxIhBfc5cvdQFub5I9G8L8GIYGlY/view?usp=drive_link" }
-            
+
             ]
         };
 
@@ -197,7 +202,7 @@
         }
 
         // Initialize with the last selected category or show all by default
-        window.onload = function() {
+        window.onload = function () {
             const selectedCategory = document.getElementById('categorySelect').value || 'all';
             searchFunction(); // Show results for the selected category
         };
