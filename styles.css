@@ -1,0 +1,195 @@
+/* Global Box Sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Body and typography */
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+  margin: 0;
+}
+
+h1 {
+  color: yellow;
+  background-color: black;
+  padding: 10px;
+  border-radius: 5px;
+  max-width: 90%;
+  margin: auto 0 20px auto;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Labels */
+label {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #222;
+}
+
+/* Buttons */
+button {
+  padding: 6px 14px;
+  margin: 8px 0;
+  color: white;
+  background-color: #007BFF;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button[type="button"] {
+  display: block;
+  width: 100%;
+  max-width: 250px;
+  margin: 15px auto 0 auto;
+  padding: 10px;
+  font-size: 1.1em;
+  border-radius: 6px;
+}
+
+/* Button grid container */
+.button-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.button-item {
+  display: inline-block;
+}
+
+/* Form styling */
+form {
+  max-width: 500px;
+  margin: 0 auto 30px auto;
+  text-align: left;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+}
+
+/* Inputs and selects */
+input[type="number"],
+input[type="text"],
+select {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 1rem;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+  margin-bottom: 12px;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus,
+select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+th,
+td {
+  padding: 10px 15px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #007bff;
+  color: white;
+  font-weight: 600;
+}
+
+/* CGPA output */
+#cgpaOutput {
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #007bff;
+  margin-top: 15px;
+}
+
+/* Search box styles */
+.search-container {
+  margin: 20px auto;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px 10px;
+  background-color: #fff;
+}
+
+.search-container input {
+  border: none;
+  outline: none;
+  font-size: 1em;
+  flex: 1;
+}
+
+.search-container svg {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  fill: #555;
+}
+
+/* Results container */
+#result {
+  margin-top: 20px;
+  font-size: 18px;
+  text-align: left;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Link styles */
+/* General links */
+a {
+  text-decoration: none;
+  color: inherit; /* Inherit color from parent by default */
+}
+
+/* Special links used for navigation or highlight */
+a.special-link {
+  display: block;
+  margin: 8px 0;
+  font-size: 18px;
+  color: blue;
+}
+
+a.special-link:hover {
+  text-decoration: underline;
+}

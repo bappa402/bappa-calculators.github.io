@@ -1,0 +1,129 @@
+/* General body */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fc;
+    margin: 0;
+    padding: 16px;
+    text-align: center;
+}
+
+/* Header */
+h1 {
+    background-color: #222;
+    color: #ffcc00;
+    padding: 8px 16px;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    display: inline-block;
+    font-size: 1.3em;
+}
+
+/* Filters container */
+#filters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap; /* default fallback for larger screens */
+}
+
+/* Wrapper for centered layout on larger screens */
+.filters-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+
+/* Search with lens */
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    border: 2px solid #0073e6;
+    border-radius: 6px;
+    padding: 4px 10px;
+    background-color: white;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.search-wrapper input[type="text"] {
+    border: none;
+    outline: none;
+    font-size: 15px;
+    padding: 6px;
+    width: 100%;
+    background-color: transparent;
+    min-width: 0;
+}
+
+.search-wrapper i {
+    color: #0073e6;
+    margin-right: 6px;
+    font-size: 16px;
+}
+
+/* Category dropdown */
+#categorySelect {
+    padding: 8px 10px;
+    font-size: 15px;
+    border-radius: 6px;
+    border: 2px solid #ccc;
+    background-color: white;
+    flex: 0 0 auto;
+    max-width: 140px;
+}
+
+/* Make both fit in one line on mobile */
+@media (max-width: 600px) {
+    #filters {
+        flex-wrap: nowrap;
+    }
+
+    .search-wrapper {
+        flex: 1;
+    }
+
+    #categorySelect {
+        flex-shrink: 0;
+    }
+}
+
+
+/* Dropdown */
+select {
+    padding: 8px 12px;
+    font-size: 15px;
+    border-radius: 6px;
+    border: 2px solid #ccc;
+    background-color: white;
+}
+
+/* Hyperlinks */
+#hyperlinks {
+    margin-top: 10px;
+    text-align: left;
+    max-width: 100%;
+}
+
+a {
+    display: block;
+    background-color: #ffffff;
+    padding: 10px 14px;
+    margin: 6px auto;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #0073e6;
+    border: 1px solid #e1e4e8;
+    transition: all 0.2s ease-in-out;
+    max-width: 600px;
+}
+
+a:hover {
+    background-color: #eaf4ff;
+    border-color: #b3d7ff;
+    text-decoration: underline;
+}

@@ -4,96 +4,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 10px;
-            background-color: #f4f4f4;
-        }
-
-        h1 {
-            color: yellow;
-            background-color: black;
-            padding: 10px;
-            border-radius: 5px;
-            max-width: 90%;
-            margin: auto;
-        }
-
-        button {
-            display: inline-block;
-            width: 90%;
-            max-width: 300px;
-            margin: 10px auto;
-            padding: 12px;
-            font-size: 16px;
-            color: white;
-            background-color: green;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: darkgreen;
-        }
-
-        input[type="text"] {
-            padding: 10px;
-            width: 80%;
-            max-width: 300px;
-            margin: 20px auto;
-            font-size: 16px;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-        }
-
-        #hyperlinks {
-            margin-top: 20px;
-            text-align: left;
-            max-width: 90%;
-            margin: 20px auto;
-        }
-
-        a {
-            display: block;
-            margin: 8px 0;
-            text-decoration: none;
-            font-size: 18px;
-            color: blue;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        select {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            margin: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="library.css">
 </head>
 
 <body>
 
     <h1>Personal Digital Library</h1>
 
-    <select id="categorySelect" onchange="categoryChanged()">
-        <option value="all">All Categories</option>
-        <option value="science">Science</option>
-        <option value="memes">Memes</option>
-        <option value="food">food</option>
-        <option value="reels">reels/shorts</option>
-        <option value="vlog">Travel Vlogs</option>
-        <option value="blog">Blog Posts</option>
-    </select>
+    <!-- Font Awesome for the search lens -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-    <br><br>
+    <!-- Inside <body> -->
 
-    <input type="text" id="searchBar" onkeyup="searchFunction()" placeholder="Search for videos..." />
+
+    <div class="filters-wrapper">
+        <div id="filters">
+            <div class="search-wrapper">
+                <i class="fa fa-search"></i>
+                <input type="text" id="searchBar" onkeyup="searchFunction()" placeholder="Search for videos..." />
+            </div>
+            <select id="categorySelect" onchange="categoryChanged()">
+                <option value="all">All Categories</option>
+                <option value="science">Science</option>
+                <option value="memes">Memes</option>
+                <option value="food">Food</option>
+                <option value="reels">Reels/Shorts</option>
+                <option value="vlog">Travel Vlogs</option>
+                <option value="blog">Blog Posts</option>
+            </select>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
 
     <br><br>
 
@@ -104,12 +55,12 @@
     <script>
         // Manually add your categories and links here.
         const categories = {
-           food: [
+            food: [
                 { title: "fb: bengali dish, chicken/fish thali", url: "https://www.facebook.com/share/p/16AdrHSJtH/" },
-               {title: "fb: mango: you can hate summer but not this", url: "https://www.facebook.com/photo/?fbid=1357420788797357&set=a.141248057081309"}
+                { title: "fb: mango: you can hate summer but not this", url: "https://www.facebook.com/photo/?fbid=1357420788797357&set=a.141248057081309" }
             ],
             reels: [
-                { title: "yt: pakistinai missile intercept by india", url: "https://youtube.com/shorts/lkkQ4fEGRq8?si=RyIiNWaxrhVa1hnX"},
+                { title: "yt: pakistinai missile intercept by india", url: "https://youtube.com/shorts/lkkQ4fEGRq8?si=RyIiNWaxrhVa1hnX" },
                 { title: "insta: car driving on beautiful road, rainy day", url: "https://www.instagram.com/reel/DIBJzM9J0Ng/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
                 { title: "insta: Manager searching to assign task, cat and dog meme", url: "https://www.instagram.com/reel/DIk3OqzzkNA/?igsh=MXF0czg0aGNueTRtbQ==" },
                 { title: "yt: Jodi Ujar kora valobasay prem chaite aso romantic couple 1", url: "https://youtu.be/RfOw3rwuG74?si=nyxAaChPCezIGezs" },
@@ -121,24 +72,24 @@
                 { title: "yt: Train: Jodi Ujar kora valobasay prem chaite aso", url: "https://youtube.com/shorts/nv7HY9OBLHs?si=kLdPAUN7eUyq7-J8" }
             ],
             vlog: [
-                { title: "fb: uber shuttl with pocket fan, AC issue", url: "https://www.facebook.com/share/p/1CHjhcVdh8/"},
-                { title: "dr: beautiful offroad cars in office parking", url: "https://drive.google.com/file/d/1cyeOREOAMz7wZtjwr5PhqOCeN2MiY4cP/view?usp=drive_link"},
+                { title: "fb: uber shuttl with pocket fan, AC issue", url: "https://www.facebook.com/share/p/1CHjhcVdh8/" },
+                { title: "dr: beautiful offroad cars in office parking", url: "https://drive.google.com/file/d/1cyeOREOAMz7wZtjwr5PhqOCeN2MiY4cP/view?usp=drive_link" },
                 { title: "fb: uber shuttl monobus", url: "https://www.facebook.com/share/p/168x3jHnYQ/" },
                 { title: "yt: Taj hotel in kolkata, west bengal", url: "https://youtu.be/MFz7K3oXCHI?si=wj5UtNgThNwJMxJh" },
                 { title: "yt: china bullet train bengali girl", url: "https://www.youtube.com/watch?v=tIvrzngqWa4" },
                 { title: "fb: evening flight landing of paris eiffel tower", url: "https://www.facebook.com/share/16EetBLjsU/" },
                 { title: "dr: china bullet train view clips", url: "https://drive.google.com/drive/folders/1uUH7zli4A9ZbbTKQo8UkHPJGNfc7N9RQ?usp=drive_link" },
-                { title: "dr: BMW car in beautiful road", url: "https://drive.google.com/file/d/1XN962uprOkWag42voZrNqTRBk2beH3-B/view?usp=drive_link"},
-                { title: "fb: Romantic Beach dinner with sunset", url: "https://www.facebook.com/photo/?fbid=674833518513870&set=a.158586026805291"},
+                { title: "dr: BMW car in beautiful road", url: "https://drive.google.com/file/d/1XN962uprOkWag42voZrNqTRBk2beH3-B/view?usp=drive_link" },
+                { title: "fb: Romantic Beach dinner with sunset", url: "https://www.facebook.com/photo/?fbid=674833518513870&set=a.158586026805291" },
                 { title: "fb: flight schedule dashboard at airport", url: "https://www.facebook.com/photo.php?fbid=122115581474437634&set=pb.61563129026972.-2207520000&type=3" }
             ],
             blog: [
-                {title: "etms tcs office bus pass", url: "https://drive.google.com/file/d/1U8H2t_45eGeAH1EdYse6aSMpch44xs1k/view?usp=drivesdk"},
+                { title: "etms tcs office bus pass", url: "https://drive.google.com/file/d/1U8H2t_45eGeAH1EdYse6aSMpch44xs1k/view?usp=drivesdk" },
                 { title: "yt: 10 things to do in Paris", url: "https://www.youtube.com/watch?v=1a2b3c4d5e6" },
                 { title: "yt: 10 things to do in London", url: "https://www.youtube.com/watch?v=7g8h9i0j1k2" }],
 
             science: [
-                { title: "yt: mtech fees should increase", url: "https://www.youtube.com/watch?v=HP2soyiiZS8"},
+                { title: "yt: mtech fees should increase", url: "https://www.youtube.com/watch?v=HP2soyiiZS8" },
                 { title: "yt: How simple ideas lead to scientific discoveries", url: "https://www.youtube.com/watch?v=F8UFGu2M2gM" },
                 { title: "fb: Square vs triangle unfair advantage", url: "https://www.facebook.com/share/p/1ER87GiDMW/" },
                 { title: "yt: Day in a Life of a WW2 Comfort Woman", url: "https://www.youtube.com/watch?v=WglIW1u-YFY" },
@@ -146,7 +97,7 @@
                 { title: "html source file of this page", url: "https://github.com/bappa402/bappa-calculators.github.io/edit/main/new%20personal%20library.html" }
             ],
             memes: [
-                {title: "operation sindoor meme", url: "https://drive.google.com/file/d/1VD2k7EnPya1iBfFJpEE9C1jNS2QYfMBm/view?usp=drivesdk"},
+                { title: "operation sindoor meme", url: "https://drive.google.com/file/d/1VD2k7EnPya1iBfFJpEE9C1jNS2QYfMBm/view?usp=drivesdk" },
                 { title: "fb: bananas without B is pineapple", url: "https://www.facebook.com/share/p/15F6Zs5bNw/" },
                 { title: "dr: adult: boys vs girls in their 20s", url: "https://drive.google.com/file/d/1_LmzAZ5Bnthk8RoPs7JsKt-e5mpi5ljK/view?usp=drive_link" },
                 { title: "dr: adult: black hole analogy of zebra pant", url: "https://drive.google.com/file/d/1dxLxHxIhBfc5cvdQFub5I9G8L8GIYGlY/view?usp=drive_link" }
@@ -171,7 +122,7 @@
 
                 return { ...item, matchScore };
             }).filter(item => item.matchScore > 0) // Filter out items with no matches
-              .sort((a, b) => b.matchScore - a.matchScore); // Sort by match score
+                .sort((a, b) => b.matchScore - a.matchScore); // Sort by match score
         }
 
         // Function to generate the links based on the filtered and ranked items

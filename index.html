@@ -1,35 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
     <title>Bappa Online Calculators</title>
     <link rel="icon" href="calculator_icon.png" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:image" content="https://bappa402.github.io/bappa-calculators.github.io//calculator_icon.png">
-
-</head>
-
-<body>
-    <h2>Some useful calculators for you</h2>
-    <br><br>
-
-    <a href="Time converter.html"><button>Time zone converter</button></a><br><br>
-    <a href="encrypt.html"><button>Encrypt or decrypt a string</button></a><br><br>
-    <a href="govt_job_salary_calculation.html"><button>Govt job salary calculator</button></a><br><br>
-    <a href="tax calculator.html"><button>Income Tax Calculator (New Regime)</button></a><br><br>  
-    <a href="Electric bill calculator.html"><button>Electric bill calculator</button><br><br>
-    <a href="find CGPA webapp.html"><button>CGPA Calculator</button></a><br><br>
-    <a href="new personal library.html"><button>Personal Digital Library</button></a><br><br>
-        <a href="fruit_data.html"><button>Fruit dashboard</button></a><br><br>
-    <a href="find_year_for_day_month_weekday.html"><button>find_year_for_day_month_weekday</button></a><br><br>
+    <meta property="og:image" content="https://bappa402.github.io/bappa-calculators.github.io/calculator_icon.png">
+    <link rel="stylesheet" href="styles.css">
     
-    <style>
-        button{
-            padding: 10px;
-            color: blue;
-        }
-    </style>
+</head>
+<body>
+    <h2>🧮 Bappa's Handy Tools & Calculators</h2>
+    <p style="font-size: 0.95em; color: #555;">
+        A collection of simple, useful tools for everyday tasks — from time zone conversion to tax and CGPA calculation.
+    </p>
 
+    <!-- 🔍 Search Bar -->
+    <div class="search-container">
+        <svg viewBox="0 0 24 24">
+            <path d="M15.5 14h-.79l-.28-.27a6.471 6.471 0 001.48-5.34C15.23 5.01 12.21 2 8.75 2S2.27 5.01 2.27 8.39s3.01 6.39 6.48 6.39c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l4.25 4.25 1.49-1.49-4.25-4.25zM8.75 13c-2.56 0-4.64-2.08-4.64-4.61 0-2.53 2.08-4.61 4.64-4.61s4.64 2.08 4.64 4.61C13.39 10.92 11.31 13 8.75 13z" />
+        </svg>
+        <input type="text" id="searchInput" onkeyup="filterButtons()" placeholder="Search calculators...">
+    </div>
+
+    <!-- 🔘 Button List -->
+    <div id="buttonList" class="button-grid">
+    <div class="button-item"><a href="new personal library.html"><button>📚 Personal Digital Library</button></a></div>
+    <div class="button-item"><a href="https://dateful.com/time-zone-converter"><button>⏰ Time Zone Converter</button></a></div>
+    <div class="button-item"><a href="encrypt.html"><button>🔐 Encrypt or Decrypt a String</button></a></div>
+    <div class="button-item"><a href="find_year_for_day_month_weekday.html"><button>📅 Find Year for Day, Month, Weekday</button></a></div>
+    <div class="button-item"><a href="govt_job_salary_calculation.html"><button>💼 Govt Job Salary Calculator</button></a></div>
+    <div class="button-item"><a href="tax calculator.html"><button>💰 Income Tax Calculator (New Regime)</button></a></div>
+    <div class="button-item"><a href="Electric bill calculator.html"><button>⚡ Electric Bill Calculator</button></a></div>
+    <div class="button-item"><a href="find CGPA webapp.html"><button>🎓 CGPA Calculator</button></a></div>
+</div>
+
+    <!-- 🔧 Filter Script -->
+    <script>
+        function filterButtons() {
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toLowerCase();
+            const items = document.querySelectorAll(".button-item");
+
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(filter) ? "inline-block" : "none";
+            });
+        }
+    </script>
 </body>
+
 
 </html>
