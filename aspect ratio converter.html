@@ -2,45 +2,88 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Generate Aspect Ratio Variants</title>
+  <title>Image Padding Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
+      padding: 20px;
+      margin: 0;
       text-align: center;
-      padding: 30px;
+      background: #f5f5f5;
     }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    input, select, button {
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+
+    #controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     #image-container, .output {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
-      flex-wrap: wrap;
       margin-top: 20px;
     }
+
     .preview-box {
       border: 1px solid #ccc;
       padding: 10px;
-      background: #f9f9f9;
+      background: #fff;
+      max-width: 90vw;
     }
+
     img.bordered {
-      border: 2px dashed #888; /* Visual boundary of generated image */
+      border: 2px dashed #888;
       background: white;
       display: block;
+      max-width: 100%;
+      height: auto;
     }
+
     #original {
-      max-width: 300px;
       display: none;
       border: 2px dashed #aaa;
+      max-width: 200px;
+      height: auto;
     }
-    button {
-      margin-top: 10px;
+
+    @media (max-width: 600px) {
+      img.bordered {
+        width: 100% !important;
+        height: auto !important;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h2>Upload an Image</h2>
-  <input type="file" accept="image/*" id="upload">
-  
+  <h2>Image Padding Generator</h2>
+
+  <div id="controls">
+    <label for="paddingColor">Select Padding Color:</label>
+    <select id="paddingColor">
+      <option value="white" selected>White</option>
+      <option value="black">Black</option>
+      <option value="gray">Gray</option>
+      <option value="red">Red</option>
+      <option value="transparent">Transparent</option>
+    </select>
+
+    <input type="file" accept="image/*" id="upload">
+  </div>
+
   <div id="image-container">
     <div class="preview-box">
       <p>Original</p>
@@ -48,13 +91,14 @@
     </div>
   </div>
 
-  <h2>Generated Versions (with white padding)</h2>
+  <h2>Generated Versions</h2>
   <div class="output" id="outputs"></div>
 
   <script>
     const uploadInput = document.getElementById('upload');
     const originalImg = document.getElementById('original');
     const outputContainer = document.getElementById('outputs');
+    const paddingColorSelect = document.getElementById('paddingColor');
 
     const ratios = [
       { label: '1:1', width: 500, height: 500 },
@@ -81,14 +125,20 @@
     function generateVariants(img) {
       outputContainer.innerHTML = '';
 
+      const paddingColor = paddingColorSelect.value;
+
       ratios.forEach(({ label, width, height }) => {
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
-
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, width, height);
+
+        if (paddingColor === 'transparent') {
+          ctx.clearRect(0, 0, width, height);
+        } else {
+          ctx.fillStyle = paddingColor;
+          ctx.fillRect(0, 0, width, height);
+        }
 
         const scale = Math.min(width / img.width, height / img.height);
         const imgWidth = img.width * scale;
@@ -97,7 +147,6 @@
         const y = (height - imgHeight) / 2;
 
         ctx.drawImage(img, x, y, imgWidth, imgHeight);
-
         const dataUrl = canvas.toDataURL('image/png');
 
         const box = document.createElement('div');
