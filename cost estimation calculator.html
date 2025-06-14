@@ -12,8 +12,7 @@
 
   For permissions, contact: linklib25@gmail.com
 -->
-
-
+  
 <!DOCTYPE html>
 <html lang="en">
 
@@ -89,6 +88,41 @@
       background-color: #0056b3;
     }
 
+    .csv-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+      /* 👈 ensures vertical alignment */
+    }
+
+    .btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 36px;
+      box-sizing: border-box;
+      line-height: 1;
+    }
+
+    .download-btn {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .upload-btn {
+      background-color: #28a745;
+      color: white;
+    }
+
+
 
     input[type="text"],
     input[type="number"] {
@@ -111,6 +145,12 @@
       display: block;
       margin: 0 auto;
     }
+
+    .add-btn {
+      background-color: #fd7e14;
+      color: white;
+    }
+
 
 
 
@@ -161,7 +201,15 @@
       <tbody id="tableBody">
       </tbody>
     </table>
-    <button onclick="addRow()">+ Add Row</button>
+    <button class="add-btn" onclick="addRow()">+ Add Row</button>
+
+    <div class="csv-buttons">
+      <button onclick="downloadCSV()" class="btn download-btn">⬇️ Download CSV</button>
+      <label for="csvUpload" class="btn upload-btn">📤 Upload CSV</label>
+      <input type="file" id="csvUpload" accept=".csv" onchange="uploadCSV()" hidden />
+    </div>
+
+
   </div>
   <br>
   <canvas id="costPieChart" width="400" height="400"></canvas>
@@ -276,6 +324,63 @@
         pieChart = new Chart(ctx, config);
       }
     }
+
+    function downloadCSV() {
+      const rows = [["Section", "Unit Price", "Count"]];
+
+      document.querySelectorAll("#tableBody tr").forEach(row => {
+        const section = row.children[0].children[0].value || "";
+        const unit = row.children[1].children[0].value || "";
+        const count = row.children[2].children[0].value || "";
+        rows.push([section, unit, count]);
+      });
+
+      const csvContent = rows.map(e => e.map(v => `"${v}"`).join(",")).join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+      const filename = prompt("Enter filename for CSV (without extension):", "cost-data");
+      if (!filename) return;
+
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${filename}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function uploadCSV() {
+      const fileInput = document.getElementById("csvUpload");
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const lines = e.target.result.split("\n").filter(line => line.trim() !== "");
+        const data = lines.slice(1).map(line => line.split(",").map(v => v.replace(/^"|"$/g, "")));
+
+        tableBody.innerHTML = ""; // Clear existing rows
+        data.forEach(([section, unit, count]) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+        <td><input type="text" value="${section}"></td>
+        <td><input type="number" value="${unit}" oninput="updateCost(this)"></td>
+        <td><input type="number" value="${count}" oninput="updateCost(this)"></td>
+        <td class="cost">0</td>
+      `;
+          tableBody.appendChild(row);
+
+          // Force cost calculation
+          const countInput = row.children[2].children[0];
+          updateCost(countInput);
+        });
+
+        updateGrossTotal();
+        updatePieChart();
+      };
+      reader.readAsText(file);
+    }
+
 
   </script>
 </body>
