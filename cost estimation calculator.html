@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cost Calculator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      padding: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      table-layout: fixed;
+    }
+
+    th,
+    td {
+      border: 1px solid #999;
+      padding: 8px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: yellow;
+      position: sticky;
+      top: 40px;
+      z-index: 2;
+    }
+
+    #grossTotal {
+      position: sticky;
+      top: 0;
+      background-color: #fff;
+      padding: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: red;
+      z-index: 3;
+    }
+
+    button {
+      margin: 20px auto 0;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      /* squircle-like */
+      display: block;
+      width: auto;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 6px;
+      font-size: 14px;
+    }
+
+    .contentWrapper {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    #costPieChart {
+      max-width: 100%;
+      width: 300px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+
+
+    @media (max-width: 600px) {
+
+      th,
+      td {
+        font-size: 12px;
+        padding: 6px;
+      }
+
+      #grossTotal {
+        font-size: 16px;
+      }
+
+      button {
+        font-size: 14px;
+      }
+
+      @media (max-width: 600px) {
+        p {
+          padding: 0 10px;
+        }
+
+        table {
+          margin: 0 10px;
+        }
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contentWrapper">
+
+    <div id="grossTotal">Gross Total: 0</div>
+    <p><b>Sections are types of expenses like: </b><i>biscuits, rice, bricks, cement, busfare, etc</i></p>
+    <table id="costTable">
+      <thead>
+        <tr>
+          <th>Section</th>
+          <th>Unit Price</th>
+          <th>Amount / Count / Days</th>
+          <th>Cost</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+      </tbody>
+    </table>
+    <button onclick="addRow()">+ Add Row</button>
+  </div>
+  <br>
+  <canvas id="costPieChart" width="400" height="400"></canvas>
+
+
+  <script>
+    const tableBody = document.getElementById('tableBody');
+
+    function createRow() {
+      const row = document.createElement('tr');
+
+      row.innerHTML = `
+        <td><input type="text"></td>
+        <td><input type="number" oninput="updateCost(this)"></td>
+<td><input type="number" placeholder="1" oninput="updateCost(this)"></td>
+        <td class="cost">0</td>
+      `;
+
+      tableBody.appendChild(row);
+    }
+
+    function updateCost(input) {
+      const row = input.parentElement.parentElement;
+      const unitPrice = parseFloat(row.children[1].children[0].value) || 0;
+      const amountValue = parseFloat(row.children[2].children[0].value);
+      const amount = isNaN(amountValue) || amountValue === 0 ? 1 : amountValue;
+      const cost = unitPrice * amount;
+      row.children[3].textContent = cost.toFixed(2);
+      updateGrossTotal();
+      updatePieChart();
+
+    }
+
+    function formatIndianNumber(x) {
+      return Math.round(x).toLocaleString('en-IN');
+    }
+
+    function updateGrossTotal() {
+      let total = 0;
+      document.querySelectorAll('.cost').forEach(cell => {
+        total += parseFloat(cell.textContent) || 0;
+      });
+      document.getElementById('grossTotal').textContent = `Gross Total: ₹ ${formatIndianNumber(total)}`;
+    }
+
+    function addRow() {
+      createRow();
+    }
+
+    window.onload = () => {
+      for (let i = 0; i < 5; i++) {
+        createRow();
+      }
+    };
+
+    let pieChart;
+
+    function updatePieChart() {
+      const labels = [];
+      const data = [];
+
+      document.querySelectorAll("#tableBody tr").forEach(row => {
+        const label = row.children[0].children[0].value || "Unnamed";
+        const value = parseFloat(row.children[3].textContent) || 0;
+
+        if (value > 0) {
+          labels.push(label);
+          data.push(value);
+        }
+      });
+
+      const config = {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: labels.map((_, i) =>
+              `hsl(${(i * 60) % 360}, 70%, 60%)`
+            )
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false // Hide legend outside
+            },
+            datalabels: {
+              color: '#000',
+              font: {
+                weight: 'bold',
+                size: 12
+              },
+              formatter: (value, context) => {
+                const total = context.chart._metasets[0].total;
+                const percentage = ((value / total) * 100).toFixed(1);
+                return `${context.chart.data.labels[context.dataIndex]}\n${percentage}%`;
+              }
+            }
+          }
+        },
+        plugins: [ChartDataLabels]
+      };
+
+
+      if (pieChart) {
+        pieChart.data = config.data;
+        pieChart.update();
+      } else {
+        const ctx = document.getElementById('costPieChart').getContext('2d');
+        pieChart = new Chart(ctx, config);
+      }
+    }
+
+  </script>
+</body>
+
+</html>
