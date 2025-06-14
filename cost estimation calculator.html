@@ -12,7 +12,7 @@
 
   For permissions, contact: linklib25@gmail.com
 -->
-  
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -116,26 +116,12 @@
       background-color: #007bff;
       color: white;
     }
-.upload-btn {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  cursor: pointer;
-  appearance: none;
-}
 
-.upload-btn::file-selector-button {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 14px;
-}
+    .upload-btn {
+      background-color: #28a745;
+      color: white;
+    }
+
 
 
     input[type="text"],
@@ -219,8 +205,8 @@
 
     <div class="csv-buttons">
       <button onclick="downloadCSV()" class="btn download-btn">⬇️ Download CSV</button>
-      
-      <input type="file" id="csvUpload" accept=".csv" onchange="uploadCSV()" class="upload-btn">
+      <label for="csvUpload" class="btn upload-btn">📤 Upload CSV</label>
+      <input type="file" id="csvUpload" onchange="uploadCSV()" hidden />
     </div>
 
 
