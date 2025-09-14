@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSP with Canvas Plot</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <script defer src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+
+
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            padding: 0;
+            background: #f5f5f5;
+        }
+
+        h3 {
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            max-width: 400px;
+            padding: 6px 8px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+            margin: 10px 0;
+            cursor: pointer;
+            background: #246;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background: #135;
+        }
+
+        #pandalSearch {
+            width: 100%;
+            max-width: 400px;
+            padding: 6px 8px;
+            font-size: 14px;
+            margin-bottom: 8px;
+            box-sizing: border-box;
+        }
+
+        #pandalList {
+            margin-bottom: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 6px;
+            background: #fff;
+        }
+
+        #pandalList label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        #output {
+            background: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+
+        canvas {
+            border: 1px solid #333;
+            background: #fafafa;
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            margin-top: 10px;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 500px) {
+            canvas {
+                height: 300px;
+            }
+
+            #output {
+                font-size: 12px;
+            }
+
+            button {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h3>Set Start Location (drop pin)</h3>
+    <input id="homeCoord" type="text" style="display: none;" placeholder="Search home location..." style="max-width:400px; margin-bottom:8px;">
+
+
+    <div id="map" style="height:300px; max-width:600px; border:1px solid #666; border-radius:6px;"></div>
+
+    <h3>Select Pandals:</h3>
+    <input id="pandalSearch" type="text" placeholder="Search pandals...">
+    <div id="pandalList"></div>
+    <button onclick="runTSP()">Compute Best Route</button>
+
+    <pre id="output"></pre>
+
+    <!-- Leaflet + GeoSearch -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@latest/dist/geosearch.css" />
+    <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
+
+    <script>
+        /* ---------- Map + search already present above this script in your HTML ---------- */
+        /* This script expects: Leaflet, leaflet-geosearch, and Leaflet Routing Machine loaded. */
+
+
+        // map already created in your page: keep same center/zoom
+        const map = L.map("map").setView([22.608, 88.374], 10);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "© OpenStreetMap contributors"
+        }).addTo(map);
+
+        // ---------- Icons ----------
+        const homeIcon = L.icon({
+            iconUrl: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [0, -28]
+        });
+
+        const selectedIcon = L.icon({
+            iconUrl: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [0, -28]
+        });
+
+        // ---------- Global state ----------
+        let homeMarker = null;
+        const pandalMarkers = {};      // name -> marker (only for selected pandals)
+        let routeControl = null;      // L.Routing.control instance
+        const selectedPandals = new Set();
+
+        // ---------- Home selection: click map or use search (leaflet-geosearch control assumed added already) ----------
+        // clicking map places/updates a draggable home marker
+        map.on("click", function (e) {
+            const { lat, lng } = e.latlng;
+            setHomeMarker([lat, lng]);
+        });
+
+        function setHomeMarker([lat, lng]) {
+            document.getElementById("homeCoord").value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+
+            if (homeMarker) {
+                homeMarker.setLatLng([lat, lng]);
+            } else {
+                homeMarker = L.marker([lat, lng], { icon: homeIcon, draggable: true }).addTo(map);
+                homeMarker.bindPopup("Home").openPopup();
+                homeMarker.on("dragend", function (ev) {
+                    const pos = ev.target.getLatLng();
+                    document.getElementById("homeCoord").value = `${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`;
+                });
+            }
+        }
+
+        // If leaflet-geosearch used, listen for 'geosearch/showlocation' (some versions emit this)
+
+        
+        map.on('geosearch/showlocation', function (result) {
+            if (result && result.location) {
+                const { y: lat, x: lng } = result.location;
+                map.setView([lat, lng], 13);
+                setHomeMarker([lat, lng]);
+            }
+        });
+
+        // ---------- Data (your pandals) ----------
+        const rawPoints = [
+            { name: "Home", coord: "22.65372299907361, 88.38037958252858", type: "home" }, // default home coords
+            { name: "Kumortuli Park", coord: "22.59917087510497, 88.36147702405188", type: "place" },
+            { name: "Bagbazar", coord: "22.60472739073317, 88.36558280871148", type: "place" },
+            { name: "Ahiritola", coord: "22.597727677079043, 88.35509096822754", type: "place" },
+            { name: "shreebhumi", coord: "22.60059328304392, 88.4025723798762", type: "place" },
+            { name: "santosh mitra", coord: "22.566297486742428, 88.36562100871039", type: "place" },
+            { name: "Newtown Sarbojonin", coord: "22.582082636124365, 88.45892976638112", type: "place" },
+            { name: "College Square", coord: "22.574640189807663, 88.36444006865979", type: "place" }
+        ];
+
+        const points = rawPoints.map(p => {
+            const [lat, lng] = p.coord.split(",").map(v => parseFloat(v.trim()));
+            return { ...p, lat, lng };
+        });
+
+        // set initial home marker (from default)
+        const initialHome = points.find(p => p.type === "home");
+        if (initialHome) setHomeMarker([initialHome.lat, initialHome.lng]);
+
+        // ---------- TSP helpers (keep your haversine + permutations logic) ----------
+        function toRad(deg) { return deg * Math.PI / 180; }
+        function haversine(a, b) {
+            const R = 6371;
+            const dLat = toRad(b.lat - a.lat), dLon = toRad(b.lng - a.lng);
+            const lat1 = toRad(a.lat), lat2 = toRad(b.lat);
+            const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+            return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+        }
+        function permutations(arr) {
+            const res = [], a = arr.slice();
+            function swap(i, j) { [a[i], a[j]] = [a[j], a[i]]; }
+            function generate(n) {
+                if (n === 1) { res.push(a.slice()); return; }
+                for (let i = 0; i < n; i++) { generate(n - 1); swap(n % 2 ? 0 : i, n - 1); }
+            }
+            generate(a.length);
+            return res;
+        }
+        function solveTSP(pointsList) {
+            const home = pointsList.find(p => p.type === "home");
+            const places = pointsList.filter(p => p.type !== "home");
+            if (places.length === 0) return null;
+            let best = null;
+            for (const perm of permutations(places)) {
+                let d = haversine(home, perm[0]);
+                for (let i = 0; i < perm.length - 1; i++) d += haversine(perm[i], perm[i + 1]);
+                d += haversine(perm[perm.length - 1], home);
+                if (!best || d < best.dist) best = { order: [home, ...perm, home], dist: d };
+            }
+            return best;
+        }
+
+        // ---------- Routing on map (sequential a->b->c->...) ----------
+        function clearRoute() {
+            if (routeControl) {
+                map.removeControl(routeControl);
+                routeControl = null;
+            }
+        }
+
+
+        let selectedMarkers = [];
+
+
+        function drawRouteOnMap(order) {
+            // Remove previous route
+            if (routeControl) {
+                map.removeControl(routeControl);
+            }
+
+            const waypoints = order.map(p => L.latLng(p.lat, p.lng));
+
+            routeControl = L.Routing.control({
+                waypoints: waypoints,
+                lineOptions: {
+                    styles: [{ color: '#246', weight: 5, opacity: 0.9 }]
+                },
+                show: false,
+                addWaypoints: false,
+                draggableWaypoints: false,
+                fitSelectedRoutes: true,
+                router: L.Routing.osrmv1({
+                    serviceUrl: 'https://router.project-osrm.org/route/v1',
+                    profile: 'cycling' // 2-wheeler/bike-friendly routing
+                }),
+                createMarker: function (i, wp, nWps) {
+                    const point = order[i];
+                    if (point.type === "home") {
+                        return L.marker(wp.latLng, { icon: homeIcon }).bindPopup(point.name);
+                    } else {
+                        return L.marker(wp.latLng, { icon: selectedIcon }).bindPopup(point.name);
+                    }
+                }
+            }).addTo(map);
+        }
+
+
+        // ---------- UI: pandal list, selection persistence, and marker creation only for selected ----------
+        const listDiv = document.getElementById("pandalList");
+        const searchBox = document.getElementById("pandalSearch");
+
+        // helper: create marker for a pandal (when selected)
+        function createPandalMarker(p) {
+            if (pandalMarkers[p.name]) return; // already created
+            const m = L.marker([p.lat, p.lng], { icon: selectedIcon }).addTo(map).bindPopup(p.name);
+            // clicking the marker will deselect (and remove marker) to keep UX simple
+            m.on("click", () => {
+                // remove selection
+                selectedPandals.delete(p.name);
+                // remove marker
+                if (pandalMarkers[p.name]) {
+                    map.removeLayer(pandalMarkers[p.name]);
+                    delete pandalMarkers[p.name];
+                }
+                // update checkbox UI
+                renderPandals(searchBox.value.trim());
+            });
+            pandalMarkers[p.name] = m;
+        }
+
+        function removePandalMarkerByName(name) {
+            if (pandalMarkers[name]) {
+                map.removeLayer(pandalMarkers[name]);
+                delete pandalMarkers[name];
+            }
+        }
+
+        // Render the checkbox list (filtering + checked state)
+        function renderPandals(filter = "") {
+            listDiv.innerHTML = "";
+            points.filter(p => p.type !== "home").forEach((p, i) => {
+                if (p.name.toLowerCase().includes(filter.toLowerCase())) {
+                    const id = "chk" + i;
+                    const isChecked = selectedPandals.has(p.name) ? "checked" : "";
+                    listDiv.innerHTML += `<label><input type="checkbox" id="${id}" data-name="${p.name}" ${isChecked}> ${p.name}</label>`;
+                }
+            });
+
+            // attach listeners (new nodes were just added)
+            document.querySelectorAll("#pandalList input[type=checkbox]").forEach(chk => {
+                // remove existing listeners by cloning to avoid double-binding when re-rendering
+                const newChk = chk.cloneNode(true);
+                chk.parentNode.replaceChild(newChk, chk);
+
+                newChk.addEventListener("change", (e) => {
+                    const name = e.target.dataset.name;
+                    const pandal = points.find(pt => pt.name === name);
+                    if (!pandal) return;
+
+                    if (e.target.checked) {
+                        selectedPandals.add(name);
+                        // create marker for selected pandal
+                        createPandalMarker(pandal);
+                    } else {
+                        selectedPandals.delete(name);
+                        // remove marker if present
+                        removePandalMarkerByName(name);
+                    }
+                });
+            });
+        }
+
+        // initial render (all pandals shown in list)
+        renderPandals();
+
+        // search listener
+        searchBox.addEventListener("input", () => {
+            const val = searchBox.value.trim();
+            renderPandals(val);
+        });
+
+        // ---------- Main: compute and draw TSP route ----------
+        document.querySelector("button[onclick='runTSP()']")?.addEventListener("click", runTSP);
+
+        function runTSP() {
+            const val = document.getElementById("homeCoord").value.trim();
+            if (!val) {
+                document.getElementById("output").innerHTML = "Please set home by clicking map or using search.";
+                return;
+            }
+            const [lat, lng] = val.split(",").map(v => parseFloat(v.trim()));
+            if (isNaN(lat) || isNaN(lng)) {
+                document.getElementById("output").innerHTML = "Home coordinates invalid.";
+                return;
+            }
+
+            // update home in points array
+            points.forEach(p => { if (p.type === "home") { p.lat = lat; p.lng = lng; p.coord = `${lat}, ${lng}`; } });
+
+            // Build selected points list: home + selected pandals
+            const selected = points.filter(p => p.type === "home" || selectedPandals.has(p.name));
+
+            if (selected.length <= 1) {
+                document.getElementById("output").innerHTML = "Please select at least one pandal.";
+                return;
+            }
+
+            // Solve TSP (brute-force)
+            const best = solveTSP(selected);
+            if (!best) {
+                document.getElementById("output").innerHTML = "No route found.";
+                return;
+            }
+
+            // show sequence + total distance
+            let html = "Best sequence:<br>";
+            for (let i = 0; i < best.order.length; i++) {
+                html += best.order[i].name;
+                if (i < best.order.length - 1) {
+                    const a = best.order[i], b = best.order[i + 1];
+                    const gmapUrl = `https://www.google.com/maps/dir/${a.lat},${a.lng}/${b.lat},${b.lng}`;
+                    html += ` <a href="${gmapUrl}" target="_blank" style="text-decoration:none; font-weight:bold; color:#1E90FF;">➡️</a> `;
+                }
+            }
+            html += `<br><br>Total (straight-line) distance: ${best.dist.toFixed(3)} km`;
+            document.getElementById("output").innerHTML = html;
+
+            // ensure markers exist for all selected pandals (they should already if selected via checkboxes)
+            // create if not present (defensive)
+            best.order.forEach(p => {
+                if (p.type !== "home" && selectedPandals.has(p.name) && !pandalMarkers[p.name]) {
+                    createPandalMarker(p);
+                }
+            });
+
+            // draw road route on map (sequential through the TSP order)
+            drawRouteOnMap(best.order);
+        }
+
+        // expose runTSP if needed
+        window.runTSP = runTSP;
+
+
+    </script>
+
+</body>
+
+</html>
