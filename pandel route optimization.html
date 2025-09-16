@@ -161,7 +161,7 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
     </div>
 
     <div id="pandalList"></div>
-    
+
     <h3>Set Start Location (drop pin)</h3>
     <input id="homeCoord" type="text" style="display: none;" placeholder="Search home location..."
         style="max-width:400px; margin-bottom:8px;">
@@ -169,14 +169,14 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
 
     <div id="map" style="height:300px; max-width:600px; border:1px solid #666; border-radius:6px;"></div>
 
-    
+
     <button onclick="runTSP()">Compute Best Route</button>
 
 
     <pre id="output"></pre>
-	<br>
-	<p>for adding pandels contact me on linklib25@gmail.com or insta: bappabain5</p>
-	<br><br>
+    <br>
+    <p>for adding pandels contact me on linklib25@gmail.com or insta: bappabain5</p>
+    <br><br>
 
     <!-- Leaflet + GeoSearch -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -462,7 +462,18 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
                 if (matchesRegion && matchesFilter) {
                     const id = "chk" + i;
                     const isChecked = selectedPandals.has(p.name) ? "checked" : "";
-                    listDiv.innerHTML += `<label><input type="checkbox" id="${id}" data-name="${p.name}" ${isChecked}> ${p.name}</label>`;
+                    //listDiv.innerHTML += `<label><input type="checkbox" id="${id}" data-name="${p.name}" ${isChecked}> ${p.name}</label>`;
+                    listDiv.innerHTML += `
+                                            <label>
+                                                <input type="checkbox" id="${id}" data-name="${p.name}" ${isChecked}>
+                                                ${p.name}
+                                                <a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(p.name + ' Durga Puja 2025 youtube')}" target="_blank" title="View images">
+                                                <img src="durga.jpg" alt="Durga" style="width:18px;height:18px;margin-left:6px;vertical-align:middle;cursor:pointer;">
+                                                </a>
+                                            </label>
+                                            `;
+
+
                 }
             });
 
