@@ -6,6 +6,7 @@
 for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
 -->
 
+
 <!doctype html>
 <html lang="en">
 
@@ -124,7 +125,8 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
 
 <body>
     <h3>Set Start Location (drop pin)</h3>
-    <input id="homeCoord" type="text" style="display: none;" placeholder="Search home location..." style="max-width:400px; margin-bottom:8px;">
+    <input id="homeCoord" type="text" style="display: none;" placeholder="Search home location..."
+        style="max-width:400px; margin-bottom:8px;">
 
 
     <div id="map" style="height:300px; max-width:600px; border:1px solid #666; border-radius:6px;"></div>
@@ -199,7 +201,7 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
 
         // If leaflet-geosearch used, listen for 'geosearch/showlocation' (some versions emit this)
 
-        
+
         map.on('geosearch/showlocation', function (result) {
             if (result && result.location) {
                 const { y: lat, x: lng } = result.location;
@@ -211,13 +213,50 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
         // ---------- Data (your pandals) ----------
         const rawPoints = [
             { name: "Home", coord: "22.65372299907361, 88.38037958252858", type: "home" }, // default home coords
-            { name: "Kumortuli Park", coord: "22.59917087510497, 88.36147702405188", type: "place" },
-            { name: "Bagbazar", coord: "22.60472739073317, 88.36558280871148", type: "place" },
-            { name: "Ahiritola", coord: "22.597727677079043, 88.35509096822754", type: "place" },
-            { name: "shreebhumi", coord: "22.60059328304392, 88.4025723798762", type: "place" },
-            { name: "santosh mitra", coord: "22.566297486742428, 88.36562100871039", type: "place" },
-            { name: "Newtown Sarbojonin", coord: "22.582082636124365, 88.45892976638112", type: "place" },
-            { name: "College Square", coord: "22.574640189807663, 88.36444006865979", type: "place" }
+            { name: "Kumortuli Park", coord: "22.59917087510497, 88.36147702405188", type: "place", reigon: "North + salt Lake" },
+            { name: "Bagbazar", coord: "22.60472739073317, 88.36558280871148", type: "place", reigon: "North + salt Lake" },
+            { name: "Ahiritola", coord: "22.597727677079043, 88.35509096822754", type: "place", reigon: "North + salt Lake" },
+            { name: "shreebhumi", coord: "22.60059328304392, 88.4025723798762", type: "place", reigon: "North + salt Lake" },
+            { name: "santosh mitra", coord: "22.566297486742428, 88.36562100871039", type: "place", reigon: "North + salt Lake" },
+            { name: "Newtown Sarbojonin", coord: "22.582082636124365, 88.45892976638112", type: "place", reigon: "North + salt Lake" },
+            { name: "College Square", coord: "22.574640189807663, 88.36444006865979", type: "place", reigon: "North + salt Lake" },
+            { name: "sodepur nabaday sangha", coord: "22.704162932602696, 88.3776406320563", type: "place", reigon: "North + salt Lake" },
+            { name: "sodepur sahid colony", coord: "22.695333094167463, 88.3763842252182", type: "place", reigon: "North + salt Lake" },
+            { name: "sodepur dakshin pally", coord: "22.698673415932312, 88.3862698359085", type: "place", reigon: "North + salt Lake" },
+            { name: "Ghola ramkrisna park", coord: "22.696194071764868, 88.39989566064249", type: "place", reigon: "North + salt Lake" },
+            { name: "sodepur bijoypur sarbajonin", coord: "22.694456080442958, 88.39157371144043", type: "place", reigon: "North + salt Lake" },
+            { name: "agarpara tarapukur pachimpally", coord: "22.68778533926442, 88.38551752749423", type: "place", reigon: "North + salt Lake" },
+            { name: "7 tanks", coord: "22.624134215514147, 88.38886884908621", type: "place", reigon: "North + salt Lake" },
+            { name: "sinthee roy", coord: "22.627285818307797, 88.3895632747805", type: "place", reigon: "North + salt Lake" },
+            { name: "dum dum park", coord: "22.60956206771255, 88.41638619925284", type: "place", reigon: "North + salt Lake" },
+            { name: "Lake town adibasi brinda", coord: "22.60539130075984, 88.40361677726241", type: "place", reigon: "North + salt Lake" },
+            { name: "Jagarani sangha bidhannagar", coord: "22.5933018582821, 88.38488324928673", type: "place", reigon: "North + salt Lake" },
+            { name: "gauri bari sarbojanin", coord: "22.595412210047172, 88.37938195258563", type: "place", reigon: "North + salt Lake" },
+            { name: "sovabazar rajbari", coord: "22.596524548772628, 88.36730974941005", type: "place", reigon: "North + salt Lake" },
+            { name: "kasi bose lane", coord: "22.591036608009865, 88.368782230229", type: "place", reigon: "North + salt Lake" },
+            { name: "hati bagan sarbojanin", coord: "22.594500697512014, 88.37198610863811", type: "place", reigon: "North + salt Lake" },
+            { name: "beliaghata 33 no", coord: "22.569223176730944, 88.39137140197289", type: "place", reigon: "North + salt Lake" },
+            { name: "mitali sangha kakurgachhi", coord: "22.580450303806412, 88.39431969614033", type: "place", reigon: "North + salt Lake" },
+            { name: "labony estate EB salt lake", coord: "22.58368015905083, 88.40686508752925", type: "place", reigon: "North + salt Lake" },
+            { name: "bhawanipur sarbojanin", coord: "22.53560207841347, 88.34383188252696", type: "place", reigon: "south" },
+            { name: "68 pally", coord: "22.529382214925672, 88.34624456834595", type: "place", reigon: "south" },
+            { name: "64 pally", coord: "22.521132979859964, 88.34754093685497", type: "place", reigon: "south" },
+            { name: "chetla agrani", coord: "22.516779580350747, 88.33705372142953", type: "place", reigon: "south" },
+            { name: "deshapriya park", coord: "22.519982550576906, 88.35381980148239", type: "place", reigon: "south" },
+            { name: "singhi park sarbojanin", coord: "22.521320478183203, 88.36294897596144", type: "place", reigon: "south" },
+            { name: "bosepukur talbagan", coord: "22.51921222266767, 88.38287515668235", type: "place", reigon: "south" },
+            { name: "shakti sangha club", coord: "22.505972406447967, 88.38778242658351", type: "place", reigon: "south" },
+            { name: "jodhpur park", coord: "22.5055041149551, 88.36547179911918", type: "place", reigon: "south" },
+            { name: "mudiali club", coord: "22.51103911715562, 88.34610673466848", type: "place", reigon: "south" },
+            { name: "taltala", coord: "22.503972066123165, 88.36418792668916", type: "place", reigon: "south" },
+            { name: "newland durga puja", coord: "22.50544140212769, 88.23053369024893", type: "place", reigon: "south" },
+            { name: "buro shibtala", coord: "22.505805581033794, 88.33023488197182", type: "place", reigon: "south" },
+            { name: "29 pally", coord: "22.508423061604812, 88.32267945234385", type: "place", reigon: "south" },
+            { name: "khidirpur 25 pally", coord: "22.540265105215475, 88.32563079056149", type: "place", reigon: "south" },
+            { name: "hazra park", coord: "22.525193965479087, 88.3460508123787", type: "place", reigon: "south" },
+            { name: "golf green", coord: "22.496101424812682, 88.36326381259857", type: "place", reigon: "south" },
+            { name: "suruchi sangha", coord: "22.509059292566267, 88.33394759422455", type: "place", reigon: "south" }
+
         ];
 
         const points = rawPoints.map(p => {
@@ -446,6 +485,5 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
     </script>
 
 </body>
-
 
 </html>
