@@ -549,15 +549,27 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
 
             // show sequence + total distance
             let html = "Best sequence:<br>";
+
             for (let i = 0; i < best.order.length; i++) {
-                html += best.order[i].name;
+                const stop = best.order[i];
+
+                // Name link: from CURRENT LOCATION → this pandal
+                const nameGmapUrl = `https://www.google.com/maps/dir/?api=1&destination=${stop.lat},${stop.lng}&travelmode=driving`;
+                html += `<a href="${nameGmapUrl}" target="_blank" style="text-decoration:none; font-weight:bold; ">${stop.name}</a>`;
+
+                // Arrow link: from previous pandal → next pandal
                 if (i < best.order.length - 1) {
-                    const a = best.order[i], b = best.order[i + 1];
-                    const gmapUrl = `https://www.google.com/maps/dir/${a.lat},${a.lng}/${b.lat},${b.lng}`;
-                    html += ` <a href="${gmapUrl}" target="_blank" style="text-decoration:none; font-weight:bold; color:#1E90FF;">➡️</a> `;
+                    const fromLat = stop.lat;
+                    const fromLng = stop.lng;
+                    const toLat = best.order[i + 1].lat;
+                    const toLng = best.order[i + 1].lng;
+                    const arrowGmapUrl = `https://www.google.com/maps/dir/${fromLat},${fromLng}/${toLat},${toLng}`;
+                    html += ` <a href="${arrowGmapUrl}" target="_blank" style="text-decoration:none; font-weight:bold; color:#1E90FF;">➡️</a> `;
                 }
             }
+
             document.getElementById("output").innerHTML = html;
+
 
             // ensure markers exist for all selected pandals (they should already if selected via checkboxes)
             // create if not present (defensive)
