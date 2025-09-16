@@ -147,13 +147,6 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
 </head>
 
 <body>
-    <h3>Set Start Location (drop pin)</h3>
-    <input id="homeCoord" type="text" style="display: none;" placeholder="Search home location..."
-        style="max-width:400px; margin-bottom:8px;">
-
-
-    <div id="map" style="height:300px; max-width:600px; border:1px solid #666; border-radius:6px;"></div>
-
     <h3>Select Pandals:</h3>
     <label for="regionFilter">Filter by region:</label>
     <select id="regionFilter">
@@ -161,17 +154,29 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
         <option value="North + salt Lake">North + Salt Lake</option>
         <option value="south">South</option>
     </select>
-
+    <br><br>
     <div class="search-wrapper">
         <input id="pandalSearch" type="text" placeholder="Search pandals...">
         <span class="clear-btn" id="clearSearch">×</span>
     </div>
 
     <div id="pandalList"></div>
+    
+    <h3>Set Start Location (drop pin)</h3>
+    <input id="homeCoord" type="text" style="display: none;" placeholder="Search home location..."
+        style="max-width:400px; margin-bottom:8px;">
+
+
+    <div id="map" style="height:300px; max-width:600px; border:1px solid #666; border-radius:6px;"></div>
+
+    
     <button onclick="runTSP()">Compute Best Route</button>
 
 
     <pre id="output"></pre>
+	<br>
+	<p>for adding pandels contact me on linklib25@gmail.com or insta: bappabain5</p>
+	<br><br>
 
     <!-- Leaflet + GeoSearch -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -408,7 +413,7 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
                 //output.innerHTML += `<br><b>Total routed distance:</b> ${distKm} km<br><b>Estimated time:</b> ${timeMin} min`;
                 // Replace only the distance/time section, keep the route sequence intact
                 output.innerHTML = output.innerHTML.replace(/<br><b>Total routed distance:[\s\S]*/, "");
-                output.innerHTML += `<br><b>Total routed distance:</b> ${distKm} km<br><b>Estimated time:</b> ${timeStr}`;
+                output.innerHTML += `<br><br><b>Total routed distance:</b> ${distKm} km<br><b>Estimated time:</b> ${timeStr}`;
 
             });
         }
