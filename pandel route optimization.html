@@ -60,6 +60,29 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
             background: #135;
         }
 
+        .search-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+
+
+        .clear-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 30px;
+            color: #888;
+            cursor: pointer;
+            display: none;
+            /* hidden until text is entered */
+        }
+
+        .clear-btn:hover {
+            color: #000;
+        }
+
         #pandalSearch {
             width: 100%;
             max-width: 400px;
@@ -132,9 +155,21 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
     <div id="map" style="height:300px; max-width:600px; border:1px solid #666; border-radius:6px;"></div>
 
     <h3>Select Pandals:</h3>
-    <input id="pandalSearch" type="text" placeholder="Search pandals...">
+    <label for="regionFilter">Filter by region:</label>
+    <select id="regionFilter">
+        <option value="all">All</option>
+        <option value="North + salt Lake">North + Salt Lake</option>
+        <option value="south">South</option>
+    </select>
+
+    <div class="search-wrapper">
+        <input id="pandalSearch" type="text" placeholder="Search pandals...">
+        <span class="clear-btn" id="clearSearch">×</span>
+    </div>
+
     <div id="pandalList"></div>
     <button onclick="runTSP()">Compute Best Route</button>
+
 
     <pre id="output"></pre>
 
@@ -198,6 +233,23 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
                 });
             }
         }
+
+        const searchInput = document.getElementById("pandalSearch");
+        const clearBtn = document.getElementById("clearSearch");
+
+        // Show or hide clear button
+        searchInput.addEventListener("input", () => {
+            clearBtn.style.display = searchInput.value ? "block" : "none";
+        });
+
+        // Clear field on click
+        clearBtn.addEventListener("click", () => {
+            searchInput.value = "";
+            clearBtn.style.display = "none";
+            searchInput.focus();
+            // Trigger your pandal filter rerender
+            renderPandals("");
+        });
 
         // If leaflet-geosearch used, listen for 'geosearch/showlocation' (some versions emit this)
 
@@ -314,7 +366,6 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
 
 
         function drawRouteOnMap(order) {
-            // Remove previous route
             if (routeControl) {
                 map.removeControl(routeControl);
             }
@@ -332,7 +383,7 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
                 fitSelectedRoutes: true,
                 router: L.Routing.osrmv1({
                     serviceUrl: 'https://router.project-osrm.org/route/v1',
-                    profile: 'cycling' // 2-wheeler/bike-friendly routing
+                    profile: 'cycling' // change to 'driving' if you want car routes
                 }),
                 createMarker: function (i, wp, nWps) {
                     const point = order[i];
@@ -343,7 +394,25 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
                     }
                 }
             }).addTo(map);
+
+            // ✅ Listen for route calculation and show real distance
+            routeControl.on("routesfound", function (e) {
+                const route = e.routes[0];
+                const distKm = (route.summary.totalDistance / 1000).toFixed(2);
+                // const timeMin = Math.round(route.summary.totalTime / 60);
+                const timeMin = distKm * 3; // approx 20 km/h scooter avg speed
+                const timeStr = timeMin < 60 ? `${Math.round(timeMin)} min` : `${Math.floor(timeMin / 60)} hr ${Math.round(timeMin % 60)} min`;
+
+                // Append/replace in the output box
+                const output = document.getElementById("output");
+                //output.innerHTML += `<br><b>Total routed distance:</b> ${distKm} km<br><b>Estimated time:</b> ${timeMin} min`;
+                // Replace only the distance/time section, keep the route sequence intact
+                output.innerHTML = output.innerHTML.replace(/<br><b>Total routed distance:[\s\S]*/, "");
+                output.innerHTML += `<br><b>Total routed distance:</b> ${distKm} km<br><b>Estimated time:</b> ${timeStr}`;
+
+            });
         }
+
 
 
         // ---------- UI: pandal list, selection persistence, and marker creation only for selected ----------
@@ -379,17 +448,22 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
         // Render the checkbox list (filtering + checked state)
         function renderPandals(filter = "") {
             listDiv.innerHTML = "";
+            const region = document.getElementById("regionFilter").value;
+
             points.filter(p => p.type !== "home").forEach((p, i) => {
-                if (p.name.toLowerCase().includes(filter.toLowerCase())) {
+                const matchesRegion = (region === "all" || p.reigon === region);
+                const matchesFilter = p.name.toLowerCase().includes(filter.toLowerCase());
+
+                if (matchesRegion && matchesFilter) {
                     const id = "chk" + i;
                     const isChecked = selectedPandals.has(p.name) ? "checked" : "";
                     listDiv.innerHTML += `<label><input type="checkbox" id="${id}" data-name="${p.name}" ${isChecked}> ${p.name}</label>`;
                 }
             });
 
-            // attach listeners (new nodes were just added)
+
+            // attach listeners
             document.querySelectorAll("#pandalList input[type=checkbox]").forEach(chk => {
-                // remove existing listeners by cloning to avoid double-binding when re-rendering
                 const newChk = chk.cloneNode(true);
                 chk.parentNode.replaceChild(newChk, chk);
 
@@ -400,19 +474,23 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
 
                     if (e.target.checked) {
                         selectedPandals.add(name);
-                        // create marker for selected pandal
                         createPandalMarker(pandal);
                     } else {
                         selectedPandals.delete(name);
-                        // remove marker if present
                         removePandalMarkerByName(name);
                     }
                 });
             });
         }
 
+
         // initial render (all pandals shown in list)
         renderPandals();
+
+        document.getElementById("regionFilter").addEventListener("change", () => {
+            renderPandals(searchBox.value.trim());
+        });
+
 
         // search listener
         searchBox.addEventListener("input", () => {
@@ -463,7 +541,6 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
                     html += ` <a href="${gmapUrl}" target="_blank" style="text-decoration:none; font-weight:bold; color:#1E90FF;">➡️</a> `;
                 }
             }
-            html += `<br><br>Total (straight-line) distance: ${best.dist.toFixed(3)} km`;
             document.getElementById("output").innerHTML = html;
 
             // ensure markers exist for all selected pandals (they should already if selected via checkboxes)
