@@ -13,7 +13,7 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>durga pandel hopping route plannar</title>
+    <title>TSP with Canvas Plot</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
@@ -147,13 +147,42 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
 </head>
 
 <body>
-    <h3>Select Pandals:</h3>
+    <h3>
+        Pandel hopping optimizer:</h3>
+    <h4>
+        <span id="pandalCounter" style="font-size:14px; color:#246; margin-left:10px;">(0 selected)</span>
+        <span id="helpBtn" title="Click for guide" style="cursor:pointer; padding:2px 8px; margin-left:8px;
+           font-size:13px; font-weight:bold; 
+           background:#246; color:#fff; 
+           border-radius:12px; border:1px solid #135;
+           transition:0.2s;">Guide ❓</span>
+
+    </h4>
+    <div id="helpTooltip"
+        style="display:none; background:#fff; border:1px solid #ccc; padding:10px; border-radius:6px; max-width:300px; font-size:14px; margin-bottom:10px;">
+        <b>How to use:</b><br>
+        1. Select pandals from the list below.<br>
+        2. Drop a pin on the map to set your starting location.<br>
+        3. Click <b>Compute Best Route</b>.<br>
+        4. View the optimized route on the map.<br>
+        5. click durga image to see pandal images<br>
+        6. Click the arrows/places in the output to open Google Maps directions.<br>
+        <br>
+        Click ❓ again to hide this help.
+    </div>
+
     <label for="regionFilter">Filter by region:</label>
-    <select id="regionFilter">
+    <select id="regionFilter" style="
+    font-size: 16px;   /* bigger text */
+    padding: 8px 12px; /* more tap space */
+    border-radius: 6px;
+    margin-top: 4px;
+">
         <option value="all">All</option>
         <option value="North + salt Lake">North + Salt Lake</option>
         <option value="south">South</option>
     </select>
+
     <br><br>
     <div class="search-wrapper">
         <input id="pandalSearch" type="text" placeholder="Search pandals...">
@@ -174,8 +203,7 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
 
 
     <pre id="output"></pre>
-    <br>
-    <p>for adding pandels contact me on linklib25@gmail.com or insta: bappabain5</p>
+    
     <br><br>
 
     <!-- Leaflet + GeoSearch -->
@@ -312,7 +340,8 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
             { name: "khidirpur 25 pally", coord: "22.540265105215475, 88.32563079056149", type: "place", reigon: "south" },
             { name: "hazra park", coord: "22.525193965479087, 88.3460508123787", type: "place", reigon: "south" },
             { name: "golf green", coord: "22.496101424812682, 88.36326381259857", type: "place", reigon: "south" },
-            { name: "suruchi sangha", coord: "22.509059292566267, 88.33394759422455", type: "place", reigon: "south" }
+            { name: "suruchi sangha", coord: "22.509059292566267, 88.33394759422455", type: "place", reigon: "south" },
+            { name: "tala pratyay", coord: "22.60967382745555, 88.38249466255259", type: "place", reigon: "south" }
 
         ];
 
@@ -348,15 +377,101 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
             const home = pointsList.find(p => p.type === "home");
             const places = pointsList.filter(p => p.type !== "home");
             if (places.length === 0) return null;
-            let best = null;
-            for (const perm of permutations(places)) {
-                let d = haversine(home, perm[0]);
-                for (let i = 0; i < perm.length - 1; i++) d += haversine(perm[i], perm[i + 1]);
-                d += haversine(perm[perm.length - 1], home);
-                if (!best || d < best.dist) best = { order: [home, ...perm, home], dist: d };
+
+            // Haversine distance
+            function distance(a, b) {
+                return haversine(a, b);
             }
-            return best;
+
+            // Brute-force TSP (only feasible for <= 10 points)
+            function bruteForce(home, places) {
+                let best = null;
+                for (const perm of permutations(places)) {
+                    let d = distance(home, perm[0]);
+                    for (let i = 0; i < perm.length - 1; i++) {
+                        d += distance(perm[i], perm[i + 1]);
+                    }
+                    d += distance(perm[perm.length - 1], home);
+                    if (!best || d < best.dist) {
+                        best = { order: [home, ...perm, home], dist: d };
+                    }
+                }
+                return best;
+            }
+
+            // Nearest neighbor heuristic
+            function nearestNeighbor(home, places) {
+                const unvisited = [...places];
+                const order = [home];
+                let current = home;
+                let totalDist = 0;
+
+                while (unvisited.length > 0) {
+                    let nearestIdx = 0;
+                    let nearestDist = distance(current, unvisited[0]);
+
+                    for (let i = 1; i < unvisited.length; i++) {
+                        const d = distance(current, unvisited[i]);
+                        if (d < nearestDist) {
+                            nearestDist = d;
+                            nearestIdx = i;
+                        }
+                    }
+
+                    const next = unvisited.splice(nearestIdx, 1)[0];
+                    order.push(next);
+                    totalDist += nearestDist;
+                    current = next;
+                }
+
+                totalDist += distance(current, home);
+                order.push(home);
+
+                return { order, dist: totalDist };
+            }
+
+            // 2-opt improvement
+            function twoOpt(solution) {
+                let { order, dist } = solution;
+                let improved = true;
+
+                function routeDistance(route) {
+                    let d = 0;
+                    for (let i = 0; i < route.length - 1; i++) {
+                        d += distance(route[i], route[i + 1]);
+                    }
+                    return d;
+                }
+
+                while (improved) {
+                    improved = false;
+                    for (let i = 1; i < order.length - 2; i++) {
+                        for (let j = i + 1; j < order.length - 1; j++) {
+                            const newRoute = order.slice(0, i)
+                                .concat(order.slice(i, j + 1).reverse())
+                                .concat(order.slice(j + 1));
+
+                            const newDist = routeDistance(newRoute);
+                            if (newDist < dist) {
+                                order = newRoute;
+                                dist = newDist;
+                                improved = true;
+                            }
+                        }
+                    }
+                }
+
+                return { order, dist };
+            }
+
+            if (places.length <= 10) {
+                return bruteForce(home, places);
+            } else {
+                let solution = nearestNeighbor(home, places);
+                return twoOpt(solution);
+            }
         }
+
 
         // ---------- Routing on map (sequential a->b->c->...) ----------
         function clearRoute() {
@@ -495,8 +610,12 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
                         selectedPandals.delete(name);
                         removePandalMarkerByName(name);
                     }
+
+                    // ✅ Update the counter on every check/uncheck
+                    updateCounter();
                 });
             });
+
         }
 
 
@@ -513,6 +632,26 @@ for adding pandels contact me on linklib25@gmail.com or insta: bappabain5
             const val = searchBox.value.trim();
             renderPandals(val);
         });
+
+
+
+
+        // --- Help tooltip toggle ---
+        const helpBtn = document.getElementById("helpBtn");
+        const helpTooltip = document.getElementById("helpTooltip");
+
+        helpBtn.addEventListener("click", () => {
+            helpTooltip.style.display = (helpTooltip.style.display === "none" || helpTooltip.style.display === "")
+                ? "block"
+                : "none";
+        });
+
+        // --- Counter update ---
+        function updateCounter() {
+            const counter = document.getElementById("pandalCounter");
+            counter.textContent = `(${selectedPandals.size} selected)`;
+        }
+
 
         // ---------- Main: compute and draw TSP route ----------
         document.querySelector("button[onclick='runTSP()']")?.addEventListener("click", runTSP);
